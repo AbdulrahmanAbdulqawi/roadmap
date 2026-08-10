@@ -330,6 +330,15 @@
     content:'';width:6px;height:6px;border-radius:50%;
     background:var(--yc);margin-top:8px;flex-shrink:0;
   }
+  .year-block .year-res-list a{
+    color:var(--text-lo);text-decoration:none;
+    border-bottom:1px dashed rgba(var(--yc-rgb),.5);
+    transition:color .15s,border-color .15s;
+  }
+  .year-block .year-res-list a:hover,
+  .year-block .year-res-list a:focus-visible{
+    color:var(--yc);border-color:var(--yc);
+  }
   .tool-pills{display:flex;flex-wrap:wrap;gap:8px;}
   .tool-pill{
     font-family:var(--f-mono);font-size:.78rem;color:var(--text-hi);
@@ -392,12 +401,17 @@
   .paper-col h3 svg{width:20px;height:20px;color:var(--c-ember);}
   .res-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px;}
   .res-list li{
-    display:flex;justify-content:space-between;align-items:baseline;gap:10px;
     padding:12px 16px;background:rgba(11,18,32,.05);border-radius:10px;
     border:1px solid rgba(11,18,32,.08);
   }
+  .res-list li a{
+    display:flex;justify-content:space-between;align-items:baseline;gap:10px;
+    width:100%;color:inherit;text-decoration:none;
+  }
   .res-list li b{font-weight:700;}
   .res-list li small{color:rgba(11,18,32,.55);font-size:.8rem;}
+  .res-list li a:hover b,
+  .res-list li a:focus-visible b{color:var(--c-gold);}
   .tips-list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:12px;}
   .tips-list li{
     display:flex;gap:12px;align-items:flex-start;
@@ -673,28 +687,56 @@
       focus:['أساسيات البرمجة (<span class="ltr">Python / Java / C++</span>)','هياكل البيانات والخوارزميات','الرياضيات المنطقية','أنظمة التشغيل والشبكات الأساسية','مبادئ قواعد البيانات'],
       build:['مشاريع بسيطة لحل مشكلات','آلة حاسبة، قائمة مهام','دفتر ملاحظات، موقع شخصي بسيط'],
       exp:['انضم لأندية تقنية','شارك في هاكاثونات','تعلّم من المصادر المفتوحة'],
-      tools:['Python','VS Code','GitHub']
+      tools:['Python','VS Code','GitHub'],
+      resources:[
+        {n:'CS50 (Harvard)', href:'https://cs50.harvard.edu/x/'},
+        {n:'Python Docs', href:'https://docs.python.org/3/'},
+        {n:'freeCodeCamp', href:'https://www.freecodecamp.org/'},
+        {n:'roadmap.sh — Computer Science', href:'https://roadmap.sh/computer-science'},
+        {n:'MDN Web Docs', href:'https://developer.mozilla.org/'}
+      ]
     },
     {
       id:2, color:'--c-teal', label:'السنة الثانية', sub:'التعمّق والتطبيق',
       focus:['هياكل بيانات متقدمة','تصميم برمجيات (<span class="ltr">OOP, SOLID</span>)','قواعد بيانات (<span class="ltr">SQL</span>)','تطوير الويب (<span class="ltr">HTML, CSS, JS</span>)','مبادئ هندسة البرمجيات'],
       build:['تطبيق ويب متكامل (<span class="ltr">CRUD</span>)','واجهة برمجة (<span class="ltr">API</span>) بسيطة','مشروع جماعي في فريق'],
       exp:['تدريب صيفي أو تدريب قصير','ساهم في مشروع مفتوح المصدر','ابحث عن فرص في شركات ناشئة'],
-      tools:['JS','React','GitHub']
+      tools:['JS','React','GitHub'],
+      resources:[
+        {n:'roadmap.sh — Frontend', href:'https://roadmap.sh/frontend'},
+        {n:'React Docs', href:'https://react.dev/'},
+        {n:'SQLBolt', href:'https://sqlbolt.com/'},
+        {n:'Refactoring.Guru — Design Patterns', href:'https://refactoring.guru/design-patterns/what-is-a-design-pattern'},
+        {n:'GitHub Docs', href:'https://docs.github.com/'}
+      ]
     },
     {
       id:3, color:'--c-gold', label:'السنة الثالثة', sub:'التخصص وبناء الهوية',
       focus:['هياكل بيانات وخوارزميات متقدمة','أنظمة موزّعة وقابلية التوسّع','الحوسبة السحابية (<span class="ltr">AWS / GCP</span>)','الاختبار والنشر (<span class="ltr">CI/CD</span>)','الأمن السيبراني الأساسي'],
       build:['مشروع متكامل كبير','تطبيق موبايل أو خدمة سحابية','لوحة تحكم وتحليل بيانات'],
       exp:['تدريب احترافي في شركة','عمل مستقل أو مشروع حر','بحث جامعي أو ورقة علمية'],
-      tools:['AWS','Docker','Testing']
+      tools:['AWS','Docker','Testing'],
+      resources:[
+        {n:'AWS Skill Builder', href:'https://skillbuilder.aws/'},
+        {n:'Docker Docs', href:'https://docs.docker.com/'},
+        {n:'System Design Primer', href:'https://github.com/donnemartin/system-design-primer'},
+        {n:'LeetCode', href:'https://leetcode.com/'},
+        {n:'OWASP Top 10', href:'https://owasp.org/www-project-top-ten/'}
+      ]
     },
     {
       id:4, color:'--c-ember', label:'السنة الرابعة', sub:'التميّز والاستعداد للسوق',
       focus:['تصميم الأنظمة (<span class="ltr">System Design</span>)','الذكاء الاصطناعي وتعلّم الآلة','تحسين الأداء وقابلية التوسّع','قيادة الفرق وإدارة المشاريع','تطوير مهارات التواصل'],
       build:['مشروع تخرّج احترافي','محفظة مشاريع قوية','منتج يمكن استخدامه فعلًا'],
       exp:['تدريب طويل أو وظيفة بدوام جزئي','بناء شبكة علاقات احترافية','المشاركة في مؤتمرات تقنية'],
-      tools:['Kubernetes','Figma','Analytics']
+      tools:['Kubernetes','Figma','Analytics'],
+      resources:[
+        {n:'Kubernetes Docs', href:'https://kubernetes.io/docs/home/'},
+        {n:'System Design Primer', href:'https://github.com/donnemartin/system-design-primer'},
+        {n:'Google — ML Crash Course', href:'https://developers.google.com/machine-learning/crash-course'},
+        {n:'Figma', href:'https://www.figma.com/'},
+        {n:'roadmap.sh — System Design', href:'https://roadmap.sh/system-design'}
+      ]
     }
   ];
 
@@ -707,12 +749,12 @@
   ];
 
   var resources = [
-    {n:'roadmap.sh', t:'موقع'},
-    {n:'Clean Code', t:'كتاب'},
-    {n:'LeetCode', t:'منصة'},
-    {n:'freeCodeCamp', t:'منصة'},
-    {n:'Fireship', t:'قناة يوتيوب'},
-    {n:'Syntax / Chat with Engineers', t:'بودكاست'}
+    {n:'roadmap.sh', t:'موقع', href:'https://roadmap.sh/'},
+    {n:'Clean Code', t:'كتاب', href:'https://www.goodreads.com/book/show/3735293-clean-code'},
+    {n:'LeetCode', t:'منصة', href:'https://leetcode.com/'},
+    {n:'freeCodeCamp', t:'منصة', href:'https://www.freecodecamp.org/'},
+    {n:'Fireship', t:'قناة يوتيوب', href:'https://www.youtube.com/@Fireship'},
+    {n:'Syntax / Chat with Engineers', t:'بودكاست', href:'https://syntax.fm/'}
   ];
 
   var tips = [
@@ -790,6 +832,7 @@
 
     function li(arr){ return arr.map(function(x){return '<li>'+x+'</li>';}).join(''); }
     function pills(arr){ return arr.map(function(x){return '<span class="tool-pill ltr">'+x+'</span>';}).join(''); }
+    function resLinks(arr){ return arr.map(function(r){return '<li><a class="ltr" href="'+r.href+'" target="_blank" rel="noopener">'+r.n+'</a></li>';}).join(''); }
 
     panel.innerHTML =
       '<div class="year-card" style="--yc:var('+y.color+');--yc-rgb:var('+y.color+'-rgb)">'+
@@ -799,6 +842,7 @@
           '<div class="year-block"><h4><svg><use href="#i-rocket"/></svg> ماذا تبني؟</h4><ul>'+li(y.build)+'</ul></div>'+
           '<div class="year-block"><h4><svg><use href="#i-briefcase"/></svg> اكتسب خبرة</h4><ul>'+li(y.exp)+'</ul></div>'+
           '<div class="year-block"><h4><svg><use href="#i-code"/></svg> أدوات مهمة</h4><div class="tool-pills">'+pills(y.tools)+'</div></div>'+
+          '<div class="year-block"><h4><svg><use href="#i-doc"/></svg> موارد</h4><ul class="year-res-list">'+resLinks(y.resources)+'</ul></div>'+
         '</div>'+
       '</div>';
     yearPanels.appendChild(panel);
@@ -837,7 +881,7 @@
   var resList = document.getElementById('resList');
   resources.forEach(function(r){
     var li = document.createElement('li');
-    li.innerHTML = '<b class="ltr">'+r.n+'</b><small>'+r.t+'</small>';
+    li.innerHTML = '<a class="ltr" href="'+r.href+'" target="_blank" rel="noopener"><b>'+r.n+'</b><small>'+r.t+'</small></a>';
     resList.appendChild(li);
   });
   var tipsList = document.getElementById('tipsList');
