@@ -244,6 +244,19 @@
     margin:20px auto 0;max-width:560px;
     color:var(--text-lo);font-size:clamp(1rem,1.6vw,1.15rem);
   }
+  .path-toggle{
+    display:inline-flex;gap:6px;margin-top:28px;padding:6px;
+    background:var(--surface);border:1px solid var(--line-strong);border-radius:999px;
+  }
+  .path-btn{
+    display:flex;align-items:center;gap:8px;
+    background:none;border:0;cursor:pointer;
+    color:var(--text-lo);padding:10px 18px;border-radius:999px;
+    font-family:var(--f-body);font-weight:600;font-size:.85rem;
+    transition:background .2s,color .2s;
+  }
+  .path-btn svg{width:15px;height:15px;flex-shrink:0;}
+  .path-btn.active{background:var(--c-gold);color:var(--ink);}
   .badges{
     margin-top:40px;
     display:flex;flex-wrap:wrap;justify-content:center;gap:12px;
@@ -665,7 +678,11 @@
   <div class="wrap hero-inner">
     <span class="eyebrow"><svg width="14" height="14"><use href="#i-compass"/></svg> <span class="ltr">2026</span> · خارطة طريق تفاعلية</span>
     <h1>خارطة طريق متكاملة <br> لمهندس <span class="accent">البرمجيات</span></h1>
-    <p class="sub">رحلتك من الجامعة إلى وظيفة أحلامك — عشر قواعد ذهبية، وأربع سنوات مخطّطة بدقة، وخمسة مسارات تعمل عليها بالتوازي طوال الطريق.</p>
+    <p class="sub" id="heroSub">رحلتك من الجامعة إلى وظيفة أحلامك — عشر قواعد ذهبية، وأربع سنوات مخطّطة بدقة، وخمسة مسارات تعمل عليها بالتوازي طوال الطريق.</p>
+    <div class="path-toggle" role="tablist" aria-label="اختر مسار التعلّم" id="pathToggle">
+      <button class="path-btn active" data-path="university" role="tab" aria-selected="true"><svg><use href="#i-book"/></svg> المسار الجامعي</button>
+      <button class="path-btn" data-path="self-taught" role="tab" aria-selected="false"><svg><use href="#i-spark"/></svg> التعلّم الذاتي (عصر الذكاء الاصطناعي)</button>
+    </div>
     <div class="badges">
       <div class="badge"><svg><use href="#i-spark"/></svg> تعلم بذكاء</div>
       <div class="badge"><svg><use href="#i-rocket"/></svg> ابنِ مشاريع حقيقية</div>
@@ -716,9 +733,9 @@
 <section class="section" id="sec-years">
   <div class="wrap">
     <div class="section-head">
-      <span class="kicker">الرحلة خلال سنوات الدراسة</span>
-      <h2>مثال: أربع سنوات نحو القمة</h2>
-      <p>اختر سنة لترى أين يجب أن يتركّز تعلّمك، وماذا تبني، وكيف تكتسب خبرة، وما الأدوات المهمة لهذه المرحلة.</p>
+      <span class="kicker" id="yearsKicker">الرحلة خلال سنوات الدراسة</span>
+      <h2 id="yearsHeading">مثال: أربع سنوات نحو القمة</h2>
+      <p id="yearsDesc">اختر سنة لترى أين يجب أن يتركّز تعلّمك، وماذا تبني، وكيف تكتسب خبرة، وما الأدوات المهمة لهذه المرحلة.</p>
     </div>
 
     <div class="year-tabs" role="tablist" id="yearTabs"></div>
@@ -730,9 +747,9 @@
 <section class="section" id="sec-projects">
   <div class="wrap">
     <div class="section-head">
-      <span class="kicker">أفكار عملية</span>
-      <h2>أفكار مشاريع لكل سنة</h2>
-      <p>لا تعرف ماذا تبني؟ اختر سنتك وابدأ بأحد هذه الأفكار — أو استخدمها كنقطة انطلاق لفكرتك الخاصة.</p>
+      <span class="kicker" id="projKicker">أفكار عملية</span>
+      <h2 id="projHeading">أفكار مشاريع لكل سنة</h2>
+      <p id="projDesc">لا تعرف ماذا تبني؟ اختر سنتك وابدأ بأحد هذه الأفكار — أو استخدمها كنقطة انطلاق لفكرتك الخاصة.</p>
     </div>
     <div class="year-tabs" role="tablist" id="projTabs"></div>
     <div id="projPanels"></div>
@@ -858,12 +875,13 @@
 
   /* ---------------- PROGRESS TRACKING ---------------- */
   var PROGRESS_KEY = 'swe-roadmap-2026-progress';
-  var progress = {rules:{}, years:{}, tracks:{}};
+  var progress = {rules:{}, years:{}, tracks:{}, aiPhases:{}};
   try{
     var savedProgress = JSON.parse(localStorage.getItem(PROGRESS_KEY) || '{}');
     progress.rules = savedProgress.rules || {};
     progress.years = savedProgress.years || {};
     progress.tracks = savedProgress.tracks || {};
+    progress.aiPhases = savedProgress.aiPhases || {};
   }catch(e){}
   function saveProgress(){ try{ localStorage.setItem(PROGRESS_KEY, JSON.stringify(progress)); }catch(e){} }
   function wireProgressCheck(el){
@@ -1011,6 +1029,88 @@
     ]}
   ];
 
+  var aiPhases = [
+    {
+      id:1, color:'--c-violet', label:'المرحلة الأولى', sub:'الأساسيات المكثّفة · 2–4 أشهر',
+      focus:['تعلّم لغة واحدة بعمق (<span class="ltr">Python</span> أو <span class="ltr">JavaScript</span>)','أساسيات الويب (<span class="ltr">HTML, CSS, JS</span>) أو سطر الأوامر والخوارزميات الأساسية','منطق البرمجة وحل المسائل خطوة بخطوة','Git والتحكم بالإصدارات من اليوم الأول','استخدام أدوات الذكاء الاصطناعي كمعلم يشرح، لا كأداة تحل بدلًا عنك'],
+      build:['مشروع صغير كل أسبوع مهما كان بسيطًا','صفحة شخصية أو سيرة ذاتية بسيطة','أداة سطر أوامر تحل مشكلة يومية'],
+      exp:['انضم لمجتمع تعلّم ذاتي (Discord أو Reddit)','شارك تقدّمك يوميًا (#100DaysOfCode)','تابع مبرمجين ذاتيي التعلّم نجحوا فعليًا'],
+      tools:['Python','VS Code','ChatGPT / Claude'],
+      resources:[
+        {n:'freeCodeCamp', href:'https://www.freecodecamp.org/'},
+        {n:'The Odin Project', href:'https://www.theodinproject.com/'},
+        {n:'CS50 (Harvard)', href:'https://cs50.harvard.edu/x/'},
+        {n:'roadmap.sh', href:'https://roadmap.sh/'}
+      ],
+      milestones:['أكملت 30 يومًا متواصلة من التعلّم','بنيت أول مشروع كامل من الصفر','فتحت حساب GitHub ونشرت أول كود']
+    },
+    {
+      id:2, color:'--c-teal', label:'المرحلة الثانية', sub:'بناء مهارات عملية · 3–5 أشهر',
+      focus:['أساسيات تطوير الويب الكامل (<span class="ltr">Front-end + Back-end</span>)','قواعد البيانات العلائقية (<span class="ltr">SQL</span>)','استخدام Git و GitHub باحتراف (فروع، طلبات دمج)','بناء ونشر تطبيقات حقيقية يستخدمها آخرون','الاستعانة بأدوات AI البرمجية (<span class="ltr">Copilot</span>) مع فهم كل سطر تكتبه'],
+      build:['تطبيق ويب متكامل (<span class="ltr">CRUD</span>) بواجهة وخادم وقاعدة بيانات','واجهة برمجية (<span class="ltr">API</span>) موثّقة','مساهمة أولى في مشروع مفتوح المصدر'],
+      exp:['ابحث عن مشاريع حرة صغيرة (Freelance micro-gigs)','شارك في هاكاثون أونلاين','اطلب مراجعة كود من مبرمج أكثر خبرة'],
+      tools:['React','Node.js','GitHub Copilot'],
+      resources:[
+        {n:'The Odin Project — Full Stack', href:'https://www.theodinproject.com/paths/full-stack-javascript'},
+        {n:'Full Stack Open', href:'https://fullstackopen.com/en/'},
+        {n:'Frontend Mentor', href:'https://www.frontendmentor.io/'},
+        {n:'GitHub Docs', href:'https://docs.github.com/'}
+      ],
+      milestones:['نشرت تطبيقًا كاملًا يستخدمه شخص آخر غيرك','ساهمت في مشروع مفتوح المصدر','حصلت على أول مراجعة كود احترافية']
+    },
+    {
+      id:3, color:'--c-gold', label:'المرحلة الثالثة', sub:'التخصص وبناء المحفظة · 3–6 أشهر',
+      focus:['التعمّق في تخصص واحد (ويب، موبايل، بيانات، أو هندسة الذكاء الاصطناعي)','أساسيات الأنظمة الموزّعة وقابلية التوسّع','النشر الاحترافي على السحابة و<span class="ltr">CI/CD</span>','بناء منتجات تستخدم واجهات AI برمجيًا (<span class="ltr">APIs</span>)، لا الاعتماد عليها كصندوق أسود فقط'],
+      build:['مشروعان أو ثلاثة في محفظة أعمال متقنة','مشروع يستدعي واجهة برمجية لنموذج ذكاء اصطناعي فعليًا','موقع محفظة أعمال احترافي يعرض رحلتك ومشاريعك'],
+      exp:['اعمل مع عميل حقيقي أو مشروع مفتوح المصدر كبير','اطلب توصية من شخص عملت معه فعليًا','ابنِ حضورًا تقنيًا بمقالات أو فيديوهات قصيرة تشرح ما تعلّمته'],
+      tools:['AWS','Docker','واجهات Claude / OpenAI'],
+      resources:[
+        {n:'AWS Skill Builder', href:'https://skillbuilder.aws/'},
+        {n:'System Design Primer', href:'https://github.com/donnemartin/system-design-primer'},
+        {n:'Anthropic Docs', href:'https://docs.anthropic.com/'},
+        {n:'Docker Docs', href:'https://docs.docker.com/'}
+      ],
+      milestones:['أنجزت مشروعًا يستخدم واجهة AI برمجيًا','نشرت محفظة أعمال احترافية على الإنترنت','حصلت على توصية من شخص عملت معه']
+    },
+    {
+      id:4, color:'--c-ember', label:'المرحلة الرابعة', sub:'الاستعداد للسوق · 2–3 أشهر ومستمر',
+      focus:['بناء سيرة ذاتية تركّز على المشاريع لا الشهادات','التحضير الجاد لمقابلات البرمجة والمقابلات السلوكية','التقديم الاستراتيجي — الشركات الناشئة أولًا','بناء شبكة علاقات مع مبرمجين ذاتيي التعلّم ناجحين'],
+      build:['سيرة ذاتية مبنية على المشاريع الحقيقية لا الشهادات','ملف GitHub و LinkedIn يعكسان رحلتك بوضوح','قصة شخصية مقنعة عن رحلة تعلّمك الذاتي'],
+      exp:['قدّم لفرص عمل أو تدريب لا تشترط شهادة جامعية','تواصل مباشرة مع مؤسسي شركات ناشئة صغيرة','اطلب مقابلات تجريبية من مجتمعك التقني'],
+      tools:['LinkedIn','Wellfound','LeetCode'],
+      resources:[
+        {n:'Wellfound (AngelList Talent)', href:'https://wellfound.com/'},
+        {n:'Pramp — مقابلات تجريبية', href:'https://www.pramp.com/'},
+        {n:'levels.fyi', href:'https://www.levels.fyi/'},
+        {n:'roadmap.sh — Full Stack', href:'https://roadmap.sh/full-stack'}
+      ],
+      milestones:['قدّمت لأول 20 فرصة عمل أو تدريب','أجريت مقابلة تجريبية حقيقية','حصلت على أول رد إيجابي أو مقابلة فعلية']
+    }
+  ];
+
+  var aiProjectIdeas = [
+    { yearId:1, color:'--c-violet', ideas:[
+      {title:'أداة سطر أوامر لتحويل الوحدات', desc:'ابنِ أداة CLI بسيطة تحوّل بين وحدات القياس أو العملات، وتدرّب على قراءة مدخلات المستخدم والتعامل مع الأخطاء.', stack:'Python'},
+      {title:'مفكرة ملاحظات نصية', desc:'طبّق حفظ وقراءة وحذف الملاحظات من ملف، كخطوة أولى للتعامل مع تخزين البيانات محليًا.', stack:'Python / JavaScript'},
+      {title:'موقع سيرة ذاتية شخصي بصفحة واحدة', desc:'صفحة HTML/CSS تعرّفك وتستضيفها مجانًا — أول خطوة عملية في حضورك الرقمي كمبرمج ذاتي التعلّم.', stack:'HTML / CSS'}
+    ]},
+    { yearId:2, color:'--c-teal', ideas:[
+      {title:'تطبيق تتبّع نفقات شخصية', desc:'واجهة أمامية + خادم + قاعدة بيانات SQL لتسجيل المصروفات وعرضها، يغطي عمليات CRUD كاملة وتسجيل دخول بسيط.', stack:'React / Node / SQL'},
+      {title:'واجهة برمجية لمدونة تقنية', desc:'صمّم قاعدة بيانات بسيطة، واعرض نقاط نهاية موثقة لإنشاء المقالات وقراءتها، وانشرها فعليًا.', stack:'Express / PostgreSQL'},
+      {title:'مساهمة في مشروع مفتوح المصدر حقيقي', desc:'ابحث عن مشروع صغير يبحث عن مساهمين، وأصلح خللًا بسيطًا أو أضف ميزة موثّقة جيدًا.', stack:'Git / GitHub'}
+    ]},
+    { yearId:3, color:'--c-gold', ideas:[
+      {title:'مساعد ذكي مبني على واجهة برمجية لنموذج لغوي', desc:'ابنِ تطبيقًا يرسل طلبات فعلية لواجهة برمجية AI ويعرض ردودًا مفيدة لمشكلة محددة، مع التعامل السليم مع المفاتيح السرّية.', stack:'Node / OpenAI أو Claude API'},
+      {title:'خدمة مصغّرة منشورة على السحابة', desc:'ابنِ واجهة برمجية وانشرها فعليًا مع قاعدة بيانات مُدارة، وأضف خط CI/CD بسيط يشغّل الاختبارات وينشر تلقائيًا.', stack:'AWS / Docker / CI'},
+      {title:'لوحة تحكم لتحليل بيانات حقيقية', desc:'اجمع بيانات عامة متاحة واعرضها في لوحة تفاعلية برسوم بيانية، وركّز على أداء الاستعلامات.', stack:'React / Chart.js / SQL'}
+    ]},
+    { yearId:4, color:'--c-ember', ideas:[
+      {title:'منتج مصغّر قابل للاستخدام فعليًا', desc:'اختر مشكلة حقيقية بسيطة وابنِ حلًا يستخدمه أشخاص فعليون، حتى لو كان صغيرًا — أقوى دليل عملي بلا شهادة جامعية.', stack:'Full-stack + نشر فعلي'},
+      {title:'محفظة أعمال تفاعلية توثّق رحلتك', desc:'ابنِ موقعًا يعرض مشاريعك ويشرح كيف تعلّمت ذاتيًا وماذا بنيت في كل مرحلة، بدل الاكتفاء بقائمة شهادات.', stack:'HTML/CSS/JS أو React'},
+      {title:'مقالة أو فيديو تقني قصير', desc:'اشرح مفهومًا تعلّمته مؤخرًا بطريقتك، وانشره — يبني حضورك التقني ويثبت فهمك الحقيقي للمقابلات القادمة.', stack:'كتابة / تسجيل بسيط'}
+    ]}
+  ];
+
   var interviewGroups = [
     {
       id:'iv-basics', icon:'i-code', color:'--c-violet', title:'أساسيات البرمجة وهياكل البيانات',
@@ -1090,7 +1190,7 @@
 
   var waypoints = [
     {id:'sec-rules', label:'القواعد العشر'},
-    {id:'sec-years', label:'سنوات الدراسة'},
+    {id:'sec-years', label:'خطة التعلّم'},
     {id:'sec-projects', label:'أفكار مشاريع'},
     {id:'sec-tracks', label:'المسارات الموازية'},
     {id:'sec-interview', label:'أسئلة المقابلات'},
@@ -1136,44 +1236,48 @@
   }
   setupAccordion('.rule-btn');
 
-  /* ---------------- RENDER: YEARS ---------------- */
+  /* ---------------- RENDER: YEARS / AI PHASES ---------------- */
   var yearTabs = document.getElementById('yearTabs');
   var yearPanels = document.getElementById('yearPanels');
-  years.forEach(function(y, idx){
-    var tab = document.createElement('button');
-    tab.className = 'year-tab';
-    tab.setAttribute('role','tab');
-    tab.setAttribute('data-y', y.id);
-    tab.setAttribute('aria-selected', idx === 0 ? 'true' : 'false');
-    tab.setAttribute('aria-controls', 'year-panel-'+y.id);
-    tab.innerHTML = '<span>'+y.label+'</span><span class="yt-sub">'+y.sub+'</span>';
-    tab.addEventListener('click', function(){ activateYear(y.id); });
-    yearTabs.appendChild(tab);
+  function li(arr){ return arr.map(function(x){return '<li>'+x+'</li>';}).join(''); }
+  function pills(arr){ return arr.map(function(x){return '<span class="tool-pill ltr">'+x+'</span>';}).join(''); }
+  function resLinks(arr){ return arr.map(function(r){return '<li><a class="ltr" href="'+r.href+'" target="_blank" rel="noopener">'+r.n+'</a></li>';}).join(''); }
 
-    var panel = document.createElement('div');
-    panel.className = 'year-panel' + (idx === 0 ? ' active' : '');
-    panel.id = 'year-panel-'+y.id;
-    panel.setAttribute('role','tabpanel');
+  function renderYearsLike(data, tabsEl, panelsEl, cat, unitWord){
+    tabsEl.innerHTML = '';
+    panelsEl.innerHTML = '';
+    data.forEach(function(y, idx){
+      var tab = document.createElement('button');
+      tab.className = 'year-tab';
+      tab.setAttribute('role','tab');
+      tab.setAttribute('data-y', y.id);
+      tab.setAttribute('aria-selected', idx === 0 ? 'true' : 'false');
+      tab.setAttribute('aria-controls', 'year-panel-'+y.id);
+      tab.innerHTML = '<span>'+y.label+'</span><span class="yt-sub">'+y.sub+'</span>';
+      tab.addEventListener('click', function(){ activateYear(y.id); });
+      tabsEl.appendChild(tab);
 
-    function li(arr){ return arr.map(function(x){return '<li>'+x+'</li>';}).join(''); }
-    function pills(arr){ return arr.map(function(x){return '<span class="tool-pill ltr">'+x+'</span>';}).join(''); }
-    function resLinks(arr){ return arr.map(function(r){return '<li><a class="ltr" href="'+r.href+'" target="_blank" rel="noopener">'+r.n+'</a></li>';}).join(''); }
+      var panel = document.createElement('div');
+      panel.className = 'year-panel' + (idx === 0 ? ' active' : '');
+      panel.id = 'year-panel-'+y.id;
+      panel.setAttribute('role','tabpanel');
 
-    panel.innerHTML =
-      '<div class="year-card" style="--yc:var('+y.color+');--yc-rgb:var('+y.color+'-rgb)">'+
-        '<div class="year-card-head"><h3>'+y.label+' — '+y.sub+'</h3><span>سنة '+y.id+' / 4</span></div>'+
-        '<div class="year-grid">'+
-          '<div class="year-block"><h4><svg><use href="#i-target"/></svg> ركّز على</h4><ul>'+li(y.focus)+'</ul></div>'+
-          '<div class="year-block"><h4><svg><use href="#i-rocket"/></svg> ماذا تبني؟</h4><ul>'+li(y.build)+'</ul></div>'+
-          '<div class="year-block"><h4><svg><use href="#i-briefcase"/></svg> اكتسب خبرة</h4><ul>'+li(y.exp)+'</ul></div>'+
-          '<div class="year-block"><h4><svg><use href="#i-code"/></svg> أدوات مهمة</h4><div class="tool-pills">'+pills(y.tools)+'</div></div>'+
-          '<div class="year-block"><h4><svg><use href="#i-doc"/></svg> موارد</h4><ul class="year-res-list">'+resLinks(y.resources)+'</ul></div>'+
-          '<div class="year-block"><h4><svg><use href="#i-check"/></svg> إنجازات رئيسية</h4><div class="milestone-list">'+milestoneChecks('years','y'+y.id,y.milestones)+'</div></div>'+
-        '</div>'+
-      '</div>';
-    yearPanels.appendChild(panel);
-    panel.querySelectorAll('.progress-check').forEach(wireProgressCheck);
-  });
+      panel.innerHTML =
+        '<div class="year-card" style="--yc:var('+y.color+');--yc-rgb:var('+y.color+'-rgb)">'+
+          '<div class="year-card-head"><h3>'+y.label+' — '+y.sub+'</h3><span>'+unitWord+' '+y.id+' / '+data.length+'</span></div>'+
+          '<div class="year-grid">'+
+            '<div class="year-block"><h4><svg><use href="#i-target"/></svg> ركّز على</h4><ul>'+li(y.focus)+'</ul></div>'+
+            '<div class="year-block"><h4><svg><use href="#i-rocket"/></svg> ماذا تبني؟</h4><ul>'+li(y.build)+'</ul></div>'+
+            '<div class="year-block"><h4><svg><use href="#i-briefcase"/></svg> اكتسب خبرة</h4><ul>'+li(y.exp)+'</ul></div>'+
+            '<div class="year-block"><h4><svg><use href="#i-code"/></svg> أدوات مهمة</h4><div class="tool-pills">'+pills(y.tools)+'</div></div>'+
+            '<div class="year-block"><h4><svg><use href="#i-doc"/></svg> موارد</h4><ul class="year-res-list">'+resLinks(y.resources)+'</ul></div>'+
+            '<div class="year-block"><h4><svg><use href="#i-check"/></svg> إنجازات رئيسية</h4><div class="milestone-list">'+milestoneChecks(cat,(cat==='years'?'y':'ai')+y.id,y.milestones)+'</div></div>'+
+          '</div>'+
+        '</div>';
+      panelsEl.appendChild(panel);
+      panel.querySelectorAll('.progress-check').forEach(wireProgressCheck);
+    });
+  }
 
   function activateYear(id){
     yearTabs.querySelectorAll('.year-tab').forEach(function(t){
@@ -1187,38 +1291,43 @@
   /* ---------------- RENDER: PROJECT IDEAS ---------------- */
   var projTabs = document.getElementById('projTabs');
   var projPanels = document.getElementById('projPanels');
-  projectIdeas.forEach(function(py, idx){
-    var y = years.filter(function(x){ return x.id === py.yearId; })[0];
-    var tab = document.createElement('button');
-    tab.className = 'year-tab';
-    tab.setAttribute('role','tab');
-    tab.setAttribute('data-y', py.yearId);
-    tab.setAttribute('aria-selected', idx === 0 ? 'true' : 'false');
-    tab.setAttribute('aria-controls', 'proj-panel-'+py.yearId);
-    tab.innerHTML = '<span>'+y.label+'</span><span class="yt-sub">'+y.sub+'</span>';
-    tab.addEventListener('click', function(){ activateProject(py.yearId); });
-    projTabs.appendChild(tab);
 
-    var panel = document.createElement('div');
-    panel.className = 'year-panel' + (idx === 0 ? ' active' : '');
-    panel.id = 'proj-panel-'+py.yearId;
-    panel.setAttribute('role','tabpanel');
+  function renderProjectIdeas(data, sourceData, tabsEl, panelsEl, unitWord){
+    tabsEl.innerHTML = '';
+    panelsEl.innerHTML = '';
+    data.forEach(function(py, idx){
+      var y = sourceData.filter(function(x){ return x.id === py.yearId; })[0];
+      var tab = document.createElement('button');
+      tab.className = 'year-tab';
+      tab.setAttribute('role','tab');
+      tab.setAttribute('data-y', py.yearId);
+      tab.setAttribute('aria-selected', idx === 0 ? 'true' : 'false');
+      tab.setAttribute('aria-controls', 'proj-panel-'+py.yearId);
+      tab.innerHTML = '<span>'+y.label+'</span><span class="yt-sub">'+y.sub+'</span>';
+      tab.addEventListener('click', function(){ activateProject(py.yearId); });
+      tabsEl.appendChild(tab);
 
-    panel.innerHTML =
-      '<div class="year-card" style="--yc:var('+py.color+');--yc-rgb:var('+py.color+'-rgb)">'+
-        '<div class="year-card-head"><h3>'+y.label+' — أفكار مشاريع</h3><span>سنة '+py.yearId+' / 4</span></div>'+
-        '<div class="year-grid">'+
-          py.ideas.map(function(idea){
-            return '<div class="year-block idea-block">'+
-              '<h4><svg><use href="#i-rocket"/></svg> '+idea.title+'</h4>'+
-              '<p class="idea-desc">'+idea.desc+'</p>'+
-              '<div class="tool-pills"><span class="tool-pill ltr">'+idea.stack+'</span></div>'+
-            '</div>';
-          }).join('')+
-        '</div>'+
-      '</div>';
-    projPanels.appendChild(panel);
-  });
+      var panel = document.createElement('div');
+      panel.className = 'year-panel' + (idx === 0 ? ' active' : '');
+      panel.id = 'proj-panel-'+py.yearId;
+      panel.setAttribute('role','tabpanel');
+
+      panel.innerHTML =
+        '<div class="year-card" style="--yc:var('+py.color+');--yc-rgb:var('+py.color+'-rgb)">'+
+          '<div class="year-card-head"><h3>'+y.label+' — أفكار مشاريع</h3><span>'+unitWord+' '+py.yearId+' / '+data.length+'</span></div>'+
+          '<div class="year-grid">'+
+            py.ideas.map(function(idea){
+              return '<div class="year-block idea-block">'+
+                '<h4><svg><use href="#i-rocket"/></svg> '+idea.title+'</h4>'+
+                '<p class="idea-desc">'+idea.desc+'</p>'+
+                '<div class="tool-pills"><span class="tool-pill ltr">'+idea.stack+'</span></div>'+
+              '</div>';
+            }).join('')+
+          '</div>'+
+        '</div>';
+      panelsEl.appendChild(panel);
+    });
+  }
 
   function activateProject(id){
     projTabs.querySelectorAll('.year-tab').forEach(function(t){
@@ -1228,6 +1337,71 @@
       p.classList.toggle('active', p.id === 'proj-panel-'+id);
     });
   }
+
+  /* ---------------- PATH TOGGLE ---------------- */
+  var PATH_KEY = 'swe-roadmap-2026-path';
+  var heroSub = document.getElementById('heroSub');
+  var yearsKicker = document.getElementById('yearsKicker');
+  var yearsHeading = document.getElementById('yearsHeading');
+  var yearsDesc = document.getElementById('yearsDesc');
+  var projKicker = document.getElementById('projKicker');
+  var projHeading = document.getElementById('projHeading');
+  var projDesc = document.getElementById('projDesc');
+
+  var pathCopy = {
+    university:{
+      sub:'رحلتك من الجامعة إلى وظيفة أحلامك — عشر قواعد ذهبية، وأربع سنوات مخطّطة بدقة، وخمسة مسارات تعمل عليها بالتوازي طوال الطريق.',
+      yearsKicker:'الرحلة خلال سنوات الدراسة', yearsHeading:'مثال: أربع سنوات نحو القمة',
+      yearsDesc:'اختر سنة لترى أين يجب أن يتركّز تعلّمك، وماذا تبني، وكيف تكتسب خبرة، وما الأدوات المهمة لهذه المرحلة.',
+      projKicker:'أفكار عملية', projHeading:'أفكار مشاريع لكل سنة',
+      projDesc:'لا تعرف ماذا تبني؟ اختر سنتك وابدأ بأحد هذه الأفكار — أو استخدمها كنقطة انطلاق لفكرتك الخاصة.',
+      unitWord:'سنة'
+    },
+    'self-taught':{
+      sub:'رحلتك من الصفر إلى وظيفة أحلامك بدون شهادة جامعية — تعلّم مركّز، مشاريع حقيقية، وأدوات الذكاء الاصطناعي في خدمتك لا بديلًا عن فهمك.',
+      yearsKicker:'الرحلة الذاتية في عصر الذكاء الاصطناعي', yearsHeading:'أربع مراحل نحو الاحتراف بدون جامعة',
+      yearsDesc:'اختر مرحلة لترى أين يجب أن يتركّز تعلّمك، وماذا تبني، وكيف تكتسب خبرة، وما الأدوات المهمة لهذه المرحلة.',
+      projKicker:'أفكار عملية', projHeading:'أفكار مشاريع لكل مرحلة',
+      projDesc:'لا تعرف ماذا تبني؟ اختر مرحلتك وابدأ بأحد هذه الأفكار — أو استخدمها كنقطة انطلاق لفكرتك الخاصة.',
+      unitWord:'المرحلة'
+    }
+  };
+
+  function applyPath(path){
+    var copy = pathCopy[path];
+    document.querySelectorAll('.path-btn').forEach(function(b){
+      var active = b.getAttribute('data-path') === path;
+      b.classList.toggle('active', active);
+      b.setAttribute('aria-selected', String(active));
+    });
+    heroSub.textContent = copy.sub;
+    yearsKicker.textContent = copy.yearsKicker;
+    yearsHeading.textContent = copy.yearsHeading;
+    yearsDesc.textContent = copy.yearsDesc;
+    projKicker.textContent = copy.projKicker;
+    projHeading.textContent = copy.projHeading;
+    projDesc.textContent = copy.projDesc;
+
+    var yearsData = path === 'university' ? years : aiPhases;
+    var projData = path === 'university' ? projectIdeas : aiProjectIdeas;
+    var cat = path === 'university' ? 'years' : 'aiPhases';
+    renderYearsLike(yearsData, yearTabs, yearPanels, cat, copy.unitWord);
+    renderProjectIdeas(projData, yearsData, projTabs, projPanels, copy.unitWord);
+  }
+
+  var savedPath = 'university';
+  try{ savedPath = localStorage.getItem(PATH_KEY) || 'university'; }catch(e){}
+  applyPath(savedPath);
+
+  document.querySelectorAll('.path-btn').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var path = btn.getAttribute('data-path');
+      try{ localStorage.setItem(PATH_KEY, path); }catch(e){}
+      applyPath(path);
+      positionWaypoints();
+      onScroll();
+    });
+  });
 
   /* ---------------- RENDER: TRACKS ---------------- */
   var tracksList = document.getElementById('tracksList');
@@ -1409,10 +1583,12 @@
     var total = rules.length + todaySteps.length;
     years.forEach(function(y){ total += y.milestones.length; });
     tracks.forEach(function(t){ total += t.milestones.length; });
+    aiPhases.forEach(function(p){ total += p.milestones.length; });
     var done = 0;
     done += Object.keys(progress.rules).filter(function(k){return progress.rules[k];}).length;
     done += Object.keys(progress.years).filter(function(k){return progress.years[k];}).length;
     done += Object.keys(progress.tracks).filter(function(k){return progress.tracks[k];}).length;
+    done += Object.keys(progress.aiPhases).filter(function(k){return progress.aiPhases[k];}).length;
     done += Object.keys(state).filter(function(k){return state[k];}).length;
     return {done:done, total:total};
   }
@@ -1426,7 +1602,7 @@
 
   document.getElementById('overallReset').addEventListener('click', function(){
     state = {};
-    progress = {rules:{}, years:{}, tracks:{}};
+    progress = {rules:{}, years:{}, tracks:{}, aiPhases:{}};
     try{ localStorage.removeItem(STORAGE_KEY); }catch(e){}
     try{ localStorage.removeItem(PROGRESS_KEY); }catch(e){}
     document.querySelectorAll('.today-item').forEach(function(item){
