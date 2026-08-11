@@ -186,7 +186,8 @@
   .rail-wp.active{background:var(--c-gold);border-color:var(--c-gold);}
   .rail-wp-label{
     position:absolute;right:22px;top:50%;transform:translateY(-50%);
-    font-size:.72rem;color:var(--text-lo);white-space:nowrap;
+    max-width:min(38vw,220px);width:max-content;
+    font-size:.72rem;color:var(--text-lo);text-align:end;line-height:1.35;
     opacity:0;transition:opacity .2s;pointer-events:none;
   }
   .rail-wp:hover + .rail-wp-label,
