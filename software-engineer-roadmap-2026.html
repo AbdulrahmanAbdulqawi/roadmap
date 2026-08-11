@@ -540,6 +540,50 @@
   }
   .today-reset:hover{color:var(--text-hi);border-color:var(--c-ember);}
 
+  /* ================= PROGRESS CHECKS (rule/year/track milestones) ================= */
+  .milestone-list{display:flex;flex-direction:column;gap:8px;}
+  .progress-check{display:flex;align-items:center;gap:10px;cursor:pointer;}
+  .progress-check input{position:absolute;opacity:0;pointer-events:none;}
+  .progress-check label{font-size:.88rem;color:var(--text-lo);cursor:pointer;flex:1;}
+  .progress-check.done label{color:var(--text-hi);text-decoration:line-through;}
+  .progress-check.done .today-check{background:var(--c-teal);border-color:var(--c-teal);}
+  .progress-check.done .today-check svg{opacity:1;}
+  .rule-panel-in .progress-check{margin-top:16px;}
+  .track-milestones{padding:0 22px 20px;}
+
+  /* ================= OVERALL PROGRESS WIDGET ================= */
+  .overall-progress{
+    max-width:420px;margin:32px auto 0;text-align:start;
+    background:var(--surface);border:1px solid var(--line-strong);
+    border-radius:var(--radius-sm);padding:16px 20px;
+  }
+  .overall-progress-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px;}
+  .overall-progress-label{font-size:.82rem;color:var(--text-lo);font-weight:600;}
+  .overall-progress .today-reset{margin-top:14px;}
+
+  /* ================= SEARCH ================= */
+  .search-wrap{
+    position:sticky;top:0;z-index:50;
+    background:var(--bg);padding:14px 20px;border-bottom:1px solid var(--line);
+  }
+  .search-bar{max-width:440px;margin:0 auto;position:relative;}
+  .search-bar input{
+    width:100%;padding:11px 42px 11px 16px;border-radius:999px;
+    border:1px solid var(--line-strong);background:var(--surface);color:var(--text-hi);
+    font-family:var(--f-body);font-size:.88rem;
+  }
+  .search-bar input::placeholder{color:var(--text-lo);}
+  .search-bar input:focus-visible{outline:2px solid var(--c-gold);outline-offset:2px;}
+  .search-bar svg{
+    position:absolute;inset-inline-end:14px;top:50%;transform:translateY(-50%);
+    width:16px;height:16px;color:var(--text-lo);pointer-events:none;
+  }
+  .search-hidden{display:none !important;}
+  .search-empty{
+    max-width:440px;margin:10px auto 0;text-align:center;
+    color:var(--text-lo);font-size:.84rem;display:none;
+  }
+
   /* ================= FOOTER ================= */
   footer{
     text-align:center;padding:48px 20px 64px;color:var(--text-lo);font-size:.86rem;
@@ -593,6 +637,7 @@
   <symbol id="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2.5M12 19.5V22M4.2 4.2l1.8 1.8M18 18l1.8 1.8M2 12h2.5M19.5 12H22M4.2 19.8 6 18M18 6l1.8-1.8"/></symbol>
   <symbol id="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5z"/></symbol>
   <symbol id="i-help" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 0 1 5 0c0 1.5-2.5 2-2.5 3.5"/><circle cx="12" cy="17" r=".6" fill="currentColor"/></symbol>
+  <symbol id="i-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></symbol>
 </svg>
 
 <button class="theme-toggle" id="themeToggle" aria-label="تبديل الوضع الداكن/الفاتح" aria-pressed="false">
@@ -627,6 +672,14 @@
       <div class="badge"><svg><use href="#i-network"/></svg> تواصل بفعالية</div>
       <div class="badge"><svg><use href="#i-target"/></svg> كن مستعدًا دائمًا</div>
     </div>
+    <div class="overall-progress" id="overallProgress">
+      <div class="overall-progress-head">
+        <span class="overall-progress-label">تقدّمك الكلي في الخارطة</span>
+        <span class="today-count ltr" id="overallCount">0 / 0</span>
+      </div>
+      <div class="today-bar"><span id="overallFill"></span></div>
+      <button class="today-reset" id="overallReset">إعادة تعيين كل التقدم</button>
+    </div>
   </div>
   <svg class="skyline" viewBox="0 0 1200 160" preserveAspectRatio="none">
     <path d="M0 160 L0 90 L160 40 L280 100 L420 20 L560 95 L700 55 L860 120 L1000 60 L1120 105 L1200 70 L1200 160 Z" fill="#8B7FD9" opacity=".18"/>
@@ -636,6 +689,15 @@
 </header>
 
 <main>
+
+<!-- ============ SEARCH ============ -->
+<div class="search-wrap">
+  <div class="search-bar">
+    <input type="search" id="searchInput" role="searchbox" aria-label="ابحث في القواعد والمسارات والأسئلة والموارد" placeholder="ابحث في القواعد، المسارات، الأسئلة، الموارد...">
+    <svg><use href="#i-search"/></svg>
+  </div>
+  <p class="search-empty" id="searchEmpty">لا توجد نتائج مطابقة لبحثك.</p>
+</div>
 
 <!-- ============ 10 RULES ============ -->
 <section class="section" id="sec-rules">
@@ -793,6 +855,53 @@
     try{ localStorage.setItem(THEME_KEY, next); }catch(e){}
   });
 
+  /* ---------------- PROGRESS TRACKING ---------------- */
+  var PROGRESS_KEY = 'swe-roadmap-2026-progress';
+  var progress = {rules:{}, years:{}, tracks:{}};
+  try{
+    var savedProgress = JSON.parse(localStorage.getItem(PROGRESS_KEY) || '{}');
+    progress.rules = savedProgress.rules || {};
+    progress.years = savedProgress.years || {};
+    progress.tracks = savedProgress.tracks || {};
+  }catch(e){}
+  function saveProgress(){ try{ localStorage.setItem(PROGRESS_KEY, JSON.stringify(progress)); }catch(e){} }
+  function wireProgressCheck(el){
+    if(!el) return;
+    var cat = el.getAttribute('data-cat');
+    var id = el.getAttribute('data-id');
+    var cb = el.querySelector('input');
+    el.addEventListener('click', function(e){
+      if(e.target.tagName.toLowerCase() === 'input') return;
+      cb.checked = !cb.checked;
+      onProgressToggle(el, cat, id, cb.checked);
+    });
+    cb.addEventListener('change', function(e){
+      onProgressToggle(el, cat, id, e.target.checked);
+    });
+  }
+  function onProgressToggle(el, cat, id, checked){
+    el.classList.toggle('done', checked);
+    progress[cat][id] = checked;
+    saveProgress();
+    updateOverallProgress();
+  }
+  function milestoneChecks(cat, idPrefix, arr){
+    return arr.map(function(m, i){
+      var id = idPrefix+'-'+i;
+      var isDone = !!progress[cat][id];
+      return '<div class="progress-check'+(isDone?' done':'')+'" data-cat="'+cat+'" data-id="'+id+'">'+
+        '<input type="checkbox" id="prog-'+id+'"'+(isDone?' checked':'')+'>'+
+        '<span class="today-check"><svg><use href="#i-check"/></svg></span>'+
+        '<label for="prog-'+id+'">'+m+'</label>'+
+      '</div>';
+    }).join('');
+  }
+
+  /* ---------------- SEARCH INDEX ---------------- */
+  var searchIndex = [];
+  function stripTags(s){ return String(s).replace(/<[^>]+>/g,''); }
+  function indexItem(el, text){ searchIndex.push({el:el, text:stripTags(text).toLowerCase()}); }
+
   /* ---------------- DATA ---------------- */
   var rules = [
     {n:'01', icon:'i-code', title:'بناء أساس قوي', desc:'تعلّم البرمجة، هياكل البيانات، قواعد البيانات، أنظمة التشغيل، والشبكات. هذه أساسياتك المفروض إتقانها قبل أي شيء آخر.'},
@@ -820,7 +929,8 @@
         {n:'freeCodeCamp', href:'https://www.freecodecamp.org/'},
         {n:'roadmap.sh — Computer Science', href:'https://roadmap.sh/computer-science'},
         {n:'MDN Web Docs', href:'https://developer.mozilla.org/'}
-      ]
+      ],
+      milestones:['أكملت مشروعًا بسيطًا من البداية للنهاية','فتحت حساب GitHub ورفعت أول كود','حللت 20 مسألة برمجية']
     },
     {
       id:2, color:'--c-teal', label:'السنة الثانية', sub:'التعمّق والتطبيق',
@@ -834,7 +944,8 @@
         {n:'SQLBolt', href:'https://sqlbolt.com/'},
         {n:'Refactoring.Guru — Design Patterns', href:'https://refactoring.guru/design-patterns/what-is-a-design-pattern'},
         {n:'GitHub Docs', href:'https://docs.github.com/'}
-      ]
+      ],
+      milestones:['بنيت تطبيق CRUD متكامل','ساهمت في مشروع مفتوح المصدر','أكملت تدريبًا صيفيًا']
     },
     {
       id:3, color:'--c-gold', label:'السنة الثالثة', sub:'التخصص وبناء الهوية',
@@ -848,7 +959,8 @@
         {n:'System Design Primer', href:'https://github.com/donnemartin/system-design-primer'},
         {n:'LeetCode', href:'https://leetcode.com/'},
         {n:'OWASP Top 10', href:'https://owasp.org/www-project-top-ten/'}
-      ]
+      ],
+      milestones:['نشرت مشروعًا على AWS أو GCP','أعددت CI/CD لمشروع','أكملت تدريبًا احترافيًا']
     },
     {
       id:4, color:'--c-ember', label:'السنة الرابعة', sub:'التميّز والاستعداد للسوق',
@@ -862,16 +974,17 @@
         {n:'Google — ML Crash Course', href:'https://developers.google.com/machine-learning/crash-course'},
         {n:'Figma', href:'https://www.figma.com/'},
         {n:'roadmap.sh — System Design', href:'https://roadmap.sh/system-design'}
-      ]
+      ],
+      milestones:['أنجزت مشروع التخرّج','بنيت محفظة أعمال قوية','حضرت مؤتمرًا أو فعالية تقنية']
     }
   ];
 
   var tracks = [
-    {icon:'i-code', color:'--c-violet', title:'مسار المشاريع', sub:'مشروع كل 3–6 أشهر', items:['مشروع كل 3–6 أشهر','ركّز على الحلول الحقيقية','اهتم بجودة الكود والتصميم','وثّق مشروعك جيدًا','انشره على GitHub']},
-    {icon:'i-spark', color:'--c-teal', title:'مسار الذكاء الاصطناعي', sub:'استخدمه، ولا تعتمد عليه أعمى', items:['تعلّم أساسيات الذكاء الاصطناعي','استخدم أدوات AI في البرمجة','ابنِ مشاريع تستخدم AI','افهم الخوارزميات والنماذج','ابقَ على اطلاع بالتطورات']},
-    {icon:'i-briefcase', color:'--c-sky', title:'مسار الخبرة العملية', sub:'تدريب، مساهمات، فرص حرة', items:['تدريب داخلي (Internships)','هاكاثونات ومسابقات','مساهمات مفتوحة المصدر','عمل مستقل (Freelance)','مشاريع مع عملاء حقيقيين']},
-    {icon:'i-target', color:'--c-ember', title:'مسار المقابلات', sub:'تدرّب من كل تجربة', items:['مسائل برمجية يوميًا','قصص سلوكية قوية','دراسة أساسيات تصميم الأنظمة','مقابلات تجريبية','تعلّم من كل تجربة']},
-    {icon:'i-network', color:'--c-rose', title:'مسار الشبكات والعلاقات', sub:'ابنِ سمعة، لا قائمة أسماء', items:['احضر لقاءات تقنية','تواصل بصدق واحترام','شارك معرفتك مع الآخرين','ابقَ على تواصل بعد اللقاء','ابنِ سمعة طيبة']}
+    {icon:'i-code', color:'--c-violet', title:'مسار المشاريع', sub:'مشروع كل 3–6 أشهر', items:['مشروع كل 3–6 أشهر','ركّز على الحلول الحقيقية','اهتم بجودة الكود والتصميم','وثّق مشروعك جيدًا','انشره على GitHub'], milestones:['نشرت أول مشروع على GitHub','وثّقت مشروعًا بملف README كامل']},
+    {icon:'i-spark', color:'--c-teal', title:'مسار الذكاء الاصطناعي', sub:'استخدمه، ولا تعتمد عليه أعمى', items:['تعلّم أساسيات الذكاء الاصطناعي','استخدم أدوات AI في البرمجة','ابنِ مشاريع تستخدم AI','افهم الخوارزميات والنماذج','ابقَ على اطلاع بالتطورات'], milestones:['استخدمت أداة AI في مشروع حقيقي','بنيت مشروعًا يعتمد على AI']},
+    {icon:'i-briefcase', color:'--c-sky', title:'مسار الخبرة العملية', sub:'تدريب، مساهمات، فرص حرة', items:['تدريب داخلي (Internships)','هاكاثونات ومسابقات','مساهمات مفتوحة المصدر','عمل مستقل (Freelance)','مشاريع مع عملاء حقيقيين'], milestones:['أكملت تدريبًا أو عمل حر','ساهمت في مصدر مفتوح']},
+    {icon:'i-target', color:'--c-ember', title:'مسار المقابلات', sub:'تدرّب من كل تجربة', items:['مسائل برمجية يوميًا','قصص سلوكية قوية','دراسة أساسيات تصميم الأنظمة','مقابلات تجريبية','تعلّم من كل تجربة'], milestones:['أجريت مقابلة تجريبية','حللت 50 مسألة برمجية']},
+    {icon:'i-network', color:'--c-rose', title:'مسار الشبكات والعلاقات', sub:'ابنِ سمعة، لا قائمة أسماء', items:['احضر لقاءات تقنية','تواصل بصدق واحترام','شارك معرفتك مع الآخرين','ابقَ على تواصل بعد اللقاء','ابنِ سمعة طيبة'], milestones:['حضرت لقاءً تقنيًا','بنيت علاقة مهنية جديدة']}
   ];
 
   var projectIdeas = [
@@ -989,6 +1102,8 @@
   rules.forEach(function(r, idx){
     var card = document.createElement('div');
     card.className = 'rule-card';
+    var rid = 'r'+idx;
+    var rDone = !!progress.rules[rid];
     card.innerHTML =
       '<button class="rule-btn" aria-expanded="false" aria-controls="rule-panel-'+idx+'">'+
         '<span class="rule-num">'+r.n+'</span>'+
@@ -996,8 +1111,16 @@
         '<span class="rule-title">'+r.title+'</span>'+
         '<svg class="rule-chevron"><use href="#i-chevron"/></svg>'+
       '</button>'+
-      '<div class="rule-panel" id="rule-panel-'+idx+'"><div class="rule-panel-in">'+r.desc+'</div></div>';
+      '<div class="rule-panel" id="rule-panel-'+idx+'"><div class="rule-panel-in">'+r.desc+
+        '<div class="progress-check'+(rDone?' done':'')+'" data-cat="rules" data-id="'+rid+'">'+
+          '<input type="checkbox" id="prog-'+rid+'"'+(rDone?' checked':'')+'>'+
+          '<span class="today-check"><svg><use href="#i-check"/></svg></span>'+
+          '<label for="prog-'+rid+'">طبّقتها بالفعل</label>'+
+        '</div>'+
+      '</div></div>';
     rulesGrid.appendChild(card);
+    wireProgressCheck(card.querySelector('.progress-check'));
+    indexItem(card, r.title+' '+r.desc);
   });
 
   function setupAccordion(selectorBtn){
@@ -1044,9 +1167,11 @@
           '<div class="year-block"><h4><svg><use href="#i-briefcase"/></svg> اكتسب خبرة</h4><ul>'+li(y.exp)+'</ul></div>'+
           '<div class="year-block"><h4><svg><use href="#i-code"/></svg> أدوات مهمة</h4><div class="tool-pills">'+pills(y.tools)+'</div></div>'+
           '<div class="year-block"><h4><svg><use href="#i-doc"/></svg> موارد</h4><ul class="year-res-list">'+resLinks(y.resources)+'</ul></div>'+
+          '<div class="year-block"><h4><svg><use href="#i-check"/></svg> إنجازات رئيسية</h4><div class="milestone-list">'+milestoneChecks('years','y'+y.id,y.milestones)+'</div></div>'+
         '</div>'+
       '</div>';
     yearPanels.appendChild(panel);
+    panel.querySelectorAll('.progress-check').forEach(wireProgressCheck);
   });
 
   function activateYear(id){
@@ -1116,10 +1241,15 @@
         '<span class="track-title"><strong>'+tr.title+'</strong><span>'+tr.sub+'</span></span>'+
         '<svg class="track-chev"><use href="#i-chevron"/></svg>'+
       '</button>'+
-      '<div class="track-panel" id="track-panel-'+idx+'"><div class="track-panel-in">'+
-        tr.items.map(function(i){return '<div>'+i+'</div>';}).join('')+
-      '</div></div>';
+      '<div class="track-panel" id="track-panel-'+idx+'">'+
+        '<div class="track-panel-in">'+
+          tr.items.map(function(i){return '<div>'+i+'</div>';}).join('')+
+        '</div>'+
+        '<div class="track-milestones"><div class="milestone-list">'+milestoneChecks('tracks','t'+idx,tr.milestones)+'</div></div>'+
+      '</div>';
     tracksList.appendChild(el);
+    el.querySelectorAll('.progress-check').forEach(wireProgressCheck);
+    indexItem(el, tr.title+' '+tr.sub+' '+tr.items.join(' ')+' '+tr.milestones.join(' '));
   });
   setupAccordion('.track-btn');
 
@@ -1149,6 +1279,10 @@
       '<h3 class="iv-group-head"><svg><use href="#'+g.icon+'"/></svg> '+g.title+'</h3>'+
       '<div class="stack-list">'+itemsHtml+'</div>';
     ivGroupsEl.appendChild(group);
+    var itemEls = group.querySelectorAll('.iv-item');
+    g.items.forEach(function(item, ii){
+      indexItem(itemEls[ii], item.q+' '+item.a);
+    });
   });
   setupAccordion('.iv-btn');
 
@@ -1158,6 +1292,7 @@
     var li = document.createElement('li');
     li.innerHTML = '<a class="ltr" href="'+r.href+'" target="_blank" rel="noopener"><b>'+r.n+'</b><small>'+r.t+'</small></a>';
     resList.appendChild(li);
+    indexItem(li, r.n+' '+r.t);
   });
   var tipsList = document.getElementById('tipsList');
   tips.forEach(function(t){
@@ -1179,8 +1314,28 @@
       '</button>'+
       '<div class="rule-panel" id="'+panelId+'"><div class="rule-panel-in">'+f.a+'</div></div>';
     faqList.appendChild(card);
+    indexItem(card, f.q+' '+f.a);
   });
   setupAccordion('.faq-btn');
+
+  /* ---------------- SEARCH WIRING ---------------- */
+  var searchInput = document.getElementById('searchInput');
+  var searchEmpty = document.getElementById('searchEmpty');
+  function filterContent(term){
+    term = term.trim().toLowerCase();
+    var anyVisible = false;
+    searchIndex.forEach(function(entry){
+      var match = !term || entry.text.indexOf(term) !== -1;
+      entry.el.classList.toggle('search-hidden', !match);
+      if(match) anyVisible = true;
+    });
+    document.querySelectorAll('.iv-group').forEach(function(g){
+      var visible = g.querySelectorAll('.iv-item:not(.search-hidden)').length;
+      g.classList.toggle('search-hidden', !!term && visible === 0);
+    });
+    searchEmpty.style.display = (term && !anyVisible) ? 'block' : 'none';
+  }
+  searchInput.addEventListener('input', function(){ filterContent(searchInput.value); });
 
   /* ---------------- TODAY CHECKLIST ---------------- */
   var todayList = document.getElementById('todayList');
@@ -1213,6 +1368,7 @@
     item.classList.toggle('done', checked);
     try{ localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }catch(e){}
     updateTodayProgress();
+    updateOverallProgress();
   }
 
   var todayFill = document.getElementById('todayFill');
@@ -1242,6 +1398,46 @@
       item.querySelector('input').checked = false;
     });
     updateTodayProgress();
+    updateOverallProgress();
+  });
+
+  /* ---------------- OVERALL PROGRESS WIDGET ---------------- */
+  var overallFill = document.getElementById('overallFill');
+  var overallCount = document.getElementById('overallCount');
+  function overallTotals(){
+    var total = rules.length + todaySteps.length;
+    years.forEach(function(y){ total += y.milestones.length; });
+    tracks.forEach(function(t){ total += t.milestones.length; });
+    var done = 0;
+    done += Object.keys(progress.rules).filter(function(k){return progress.rules[k];}).length;
+    done += Object.keys(progress.years).filter(function(k){return progress.years[k];}).length;
+    done += Object.keys(progress.tracks).filter(function(k){return progress.tracks[k];}).length;
+    done += Object.keys(state).filter(function(k){return state[k];}).length;
+    return {done:done, total:total};
+  }
+  function updateOverallProgress(){
+    var t = overallTotals();
+    var pct = t.total ? Math.round((t.done/t.total)*100) : 0;
+    overallFill.style.width = pct+'%';
+    overallCount.textContent = t.done+' / '+t.total;
+  }
+  updateOverallProgress();
+
+  document.getElementById('overallReset').addEventListener('click', function(){
+    state = {};
+    progress = {rules:{}, years:{}, tracks:{}};
+    try{ localStorage.removeItem(STORAGE_KEY); }catch(e){}
+    try{ localStorage.removeItem(PROGRESS_KEY); }catch(e){}
+    document.querySelectorAll('.today-item').forEach(function(item){
+      item.classList.remove('done');
+      item.querySelector('input').checked = false;
+    });
+    document.querySelectorAll('.progress-check').forEach(function(item){
+      item.classList.remove('done');
+      item.querySelector('input').checked = false;
+    });
+    updateTodayProgress();
+    updateOverallProgress();
   });
 
   /* ---------------- RAIL WAYPOINTS ---------------- */
