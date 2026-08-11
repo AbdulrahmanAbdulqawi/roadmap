@@ -3,8 +3,22 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="color-scheme" content="dark">
+<meta name="color-scheme" content="dark light">
 <title>خارطة طريق مهندس البرمجيات 2026 | تفاعلية</title>
+<meta name="description" content="خارطة طريق تفاعلية لمهندس البرمجيات 2026: عشر قواعد ذهبية، خطة أربع سنوات دراسية، خمسة مسارات موازية، وأدوات لتتبع تقدمك خطوة بخطوة.">
+<link rel="canonical" href="https://roadmap.abdulrahmanabdulqawi.com/">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="ar_AR">
+<meta property="og:title" content="خارطة طريق مهندس البرمجيات 2026">
+<meta property="og:description" content="رحلتك من الجامعة إلى وظيفة أحلامك — عشر قواعد ذهبية، وأربع سنوات مخطّطة بدقة، وخمسة مسارات تعمل عليها بالتوازي.">
+<meta property="og:url" content="https://roadmap.abdulrahmanabdulqawi.com/">
+<meta property="og:image" content="https://roadmap.abdulrahmanabdulqawi.com/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="خارطة طريق مهندس البرمجيات 2026">
+<meta name="twitter:description" content="عشر قواعد ذهبية، أربع سنوات، خمسة مسارات — خارطة طريق تفاعلية لمهندسي البرمجيات.">
+<meta name="twitter:image" content="https://roadmap.abdulrahmanabdulqawi.com/og-image.png">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>%F0%9F%97%BA%EF%B8%8F</text></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -36,6 +50,18 @@
     --radius:16px;
     --radius-sm:10px;
     --shadow:0 20px 50px -20px rgba(0,0,0,.6);
+  }
+
+  :root[data-theme="light"]{
+    --bg:#F6F4EC;
+    --surface:#FFFFFF;
+    --surface-2:#EFEBDD;
+    --paper:#0B1220;
+    --ink:#F5F3EC;
+    --text-hi:#171B26;
+    --text-lo:#5B6072;
+    --line:rgba(11,18,32,.09);
+    --line-strong:rgba(11,18,32,.16);
   }
 
   *{box-sizing:border-box;}
@@ -70,6 +96,20 @@
     background:linear-gradient(90deg,var(--c-teal),var(--c-gold));
     transition:width .08s linear;
   }
+
+  /* ================= THEME TOGGLE ================= */
+  .theme-toggle{
+    position:fixed;top:14px;left:14px;z-index:60;
+    width:40px;height:40px;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;
+    background:var(--surface);border:1px solid var(--line);
+    color:var(--c-gold);cursor:pointer;
+    box-shadow:var(--shadow);
+  }
+  .theme-toggle svg{width:18px;height:18px;}
+  .theme-toggle .tt-moon{display:none;}
+  :root[data-theme="light"] .theme-toggle .tt-sun{display:none;}
+  :root[data-theme="light"] .theme-toggle .tt-moon{display:block;}
 
   /* ================= RAIL (desktop signature element) ================= */
   .rail{
@@ -526,7 +566,14 @@
   <symbol id="i-network" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="2"/><circle cx="18" cy="6" r="2"/><circle cx="12" cy="18" r="2"/><path d="M7.5 7l3.5 9M16.5 7L13 16M8 6h8"/></symbol>
   <symbol id="i-book" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5c2-1 5-1 8 0v14c-3-1-6-1-8 0V5z"/><path d="M20 5c-2-1-5-1-8 0v14c3-1 6-1 8 0V5z"/></symbol>
   <symbol id="i-compass" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M15 9l-2 6-6 2 2-6 6-2z"/></symbol>
+  <symbol id="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2.5M12 19.5V22M4.2 4.2l1.8 1.8M18 18l1.8 1.8M2 12h2.5M19.5 12H22M4.2 19.8 6 18M18 6l1.8-1.8"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5z"/></symbol>
 </svg>
+
+<button class="theme-toggle" id="themeToggle" aria-label="تبديل الوضع الداكن/الفاتح" aria-pressed="false">
+  <svg class="tt-sun"><use href="#i-sun"/></svg>
+  <svg class="tt-moon"><use href="#i-moon"/></svg>
+</button>
 
 <div class="top-progress" id="topProgress"><span id="topProgressFill"></span></div>
 
@@ -666,6 +713,23 @@
   "use strict";
   var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   if(!reduceMotion){ document.documentElement.style.scrollBehavior = 'smooth'; }
+
+  /* ---------------- THEME ---------------- */
+  var THEME_KEY = 'swe-roadmap-2026-theme';
+  var themeToggle = document.getElementById('themeToggle');
+  function applyTheme(t){
+    document.documentElement.setAttribute('data-theme', t);
+    themeToggle.setAttribute('aria-pressed', String(t === 'light'));
+  }
+  var savedTheme = null;
+  try{ savedTheme = localStorage.getItem(THEME_KEY); }catch(e){}
+  var prefersLight = window.matchMedia('(prefers-color-scheme: light)').matches;
+  applyTheme(savedTheme || (prefersLight ? 'light' : 'dark'));
+  themeToggle.addEventListener('click', function(){
+    var next = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+    applyTheme(next);
+    try{ localStorage.setItem(THEME_KEY, next); }catch(e){}
+  });
 
   /* ---------------- DATA ---------------- */
   var rules = [
