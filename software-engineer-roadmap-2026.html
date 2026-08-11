@@ -190,7 +190,7 @@
     opacity:0;transition:opacity .2s;pointer-events:none;
   }
   .rail-wp:hover + .rail-wp-label,
-  .rail-wp.active ~ .rail-wp-label{opacity:1;}
+  .rail-wp.active + .rail-wp-label{opacity:1;}
 
   @media (min-width:1080px){
     .rail{display:flex;}
@@ -1456,7 +1456,7 @@
     label.textContent = w.label;
     railWaypointsEl.appendChild(dot);
     railWaypointsEl.appendChild(label);
-    wpEls.push({id:w.id, dot:dot});
+    wpEls.push({id:w.id, dot:dot, label:label});
   });
 
   function positionWaypoints(){
@@ -1469,6 +1469,7 @@
       var top = el.offsetTop;
       var frac = Math.min(1, Math.max(0, top / (document.documentElement.scrollHeight - window.innerHeight)));
       wpEls[i].dot.style.top = (frac * trackH) + 'px';
+      wpEls[i].label.style.top = (frac * trackH) + 'px';
       wpEls[i].frac = frac;
     });
   }
