@@ -422,6 +422,30 @@
     border-inline-start:3px solid var(--tc);
   }
 
+  /* ================= REUSABLE STACK LIST (FAQ / interview items) ================= */
+  .stack-list{display:flex;flex-direction:column;gap:12px;}
+
+  /* ================= PROJECT IDEAS ================= */
+  .idea-desc{font-size:.88rem;color:var(--text-lo);margin-bottom:12px;}
+
+  /* ================= INTERVIEW PREP ================= */
+  .iv-group{margin-bottom:28px;}
+  .iv-group:last-child{margin-bottom:0;}
+  .iv-group-head{
+    display:flex;align-items:center;gap:10px;
+    margin:0 0 14px;font-family:var(--f-display);font-weight:700;font-size:1.05rem;
+    color:var(--text-hi);
+  }
+  .iv-group-head svg{width:20px;height:20px;color:var(--gc);flex-shrink:0;}
+  .iv-level{
+    font-family:var(--f-mono);font-size:.7rem;font-weight:600;
+    padding:3px 10px;border-radius:999px;flex-shrink:0;
+    border:1px solid currentColor;
+  }
+  .iv-level.lvl-1{color:var(--c-teal);}
+  .iv-level.lvl-2{color:var(--c-gold);}
+  .iv-level.lvl-3{color:var(--c-ember);}
+
   /* ================= RESOURCES / TIPS (paper) ================= */
   .paper-section{
     background:var(--paper);
@@ -568,6 +592,7 @@
   <symbol id="i-compass" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M15 9l-2 6-6 2 2-6 6-2z"/></symbol>
   <symbol id="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2.5M12 19.5V22M4.2 4.2l1.8 1.8M18 18l1.8 1.8M2 12h2.5M19.5 12H22M4.2 19.8 6 18M18 6l1.8-1.8"/></symbol>
   <symbol id="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5z"/></symbol>
+  <symbol id="i-help" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 0 1 5 0c0 1.5-2.5 2-2.5 3.5"/><circle cx="12" cy="17" r=".6" fill="currentColor"/></symbol>
 </svg>
 
 <button class="theme-toggle" id="themeToggle" aria-label="تبديل الوضع الداكن/الفاتح" aria-pressed="false">
@@ -638,6 +663,19 @@
   </div>
 </section>
 
+<!-- ============ PROJECT IDEAS ============ -->
+<section class="section" id="sec-projects">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="kicker">أفكار عملية</span>
+      <h2>أفكار مشاريع لكل سنة</h2>
+      <p>لا تعرف ماذا تبني؟ اختر سنتك وابدأ بأحد هذه الأفكار — أو استخدمها كنقطة انطلاق لفكرتك الخاصة.</p>
+    </div>
+    <div class="year-tabs" role="tablist" id="projTabs"></div>
+    <div id="projPanels"></div>
+  </div>
+</section>
+
 <!-- ============ 5 TRACKS ============ -->
 <section class="section" id="sec-tracks">
   <div class="wrap">
@@ -647,6 +685,18 @@
       <p>لا تنتظر دورك — هذه الخمسة تسير معًا، جنبًا إلى جنب، من أول يوم حتى التخرّج وما بعده.</p>
     </div>
     <div class="tracks" id="tracksList"></div>
+  </div>
+</section>
+
+<!-- ============ INTERVIEW PREP ============ -->
+<section class="section" id="sec-interview">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="kicker">استعد جيدًا</span>
+      <h2>بنك أسئلة المقابلات</h2>
+      <p>أسئلة تقنية وسلوكية شائعة، مرتبة حسب الموضوع ومستوى الصعوبة. اضغط على أي سؤال لرؤية إجابة موجزة.</p>
+    </div>
+    <div id="ivGroups"></div>
   </div>
 </section>
 
@@ -673,6 +723,18 @@
   <div class="cta">
     <svg class="cta-flag"><use href="#i-flag"/></svg>
     <blockquote>الشهادة تفتح <span class="hl">الباب</span>، لكن المهارات والمشاريع والخبرة هي ما تجعلك تدخل، وتنجح، وتستمر.</blockquote>
+  </div>
+</section>
+
+<!-- ============ FAQ ============ -->
+<section class="section" id="sec-faq">
+  <div class="wrap">
+    <div class="section-head">
+      <span class="kicker">أسئلة متكررة</span>
+      <h2>أسئلة شائعة قبل أن تبدأ</h2>
+      <p>إجابات سريعة عن الأسئلة التي يطرحها معظم الطلاب في بداية الطريق.</p>
+    </div>
+    <div class="stack-list" id="faqList"></div>
   </div>
 </section>
 
@@ -812,6 +874,78 @@
     {icon:'i-network', color:'--c-rose', title:'مسار الشبكات والعلاقات', sub:'ابنِ سمعة، لا قائمة أسماء', items:['احضر لقاءات تقنية','تواصل بصدق واحترام','شارك معرفتك مع الآخرين','ابقَ على تواصل بعد اللقاء','ابنِ سمعة طيبة']}
   ];
 
+  var projectIdeas = [
+    { yearId:1, color:'--c-violet', ideas:[
+      {title:'محرك بحث عن الكلمات في ملف نصي', desc:'اقرأ ملفات نصية وابنِ فهرسًا بسيطًا يسمح بالبحث السريع عن كلمة، وتدرّب على القراءة من الملفات وهياكل البيانات الأساسية.', stack:'Python'},
+      {title:'لعبة تخمين الأرقام بواجهة نصية', desc:'مشروع صغير لتطبيق المنطق الشرطي والحلقات، وأضف عليه لاحقًا نظام نقاط وحفظ أفضل النتائج في ملف.', stack:'Python / C++'},
+      {title:'موقع سيرة ذاتية شخصي', desc:'صفحة HTML/CSS واحدة تعرّف بك وتستضيفها مجانًا، أول خطوة عملية في بناء حضورك الرقمي.', stack:'HTML / CSS'}
+    ]},
+    { yearId:2, color:'--c-teal', ideas:[
+      {title:'تطبيق إدارة مهام بقاعدة بيانات', desc:'واجهة أمامية + واجهة برمجية REST بسيطة + قاعدة بيانات SQL، تغطي عمليات CRUD كاملة وتسجيل الدخول الأساسي.', stack:'React / Node / SQL'},
+      {title:'واجهة برمجية لموقع مطاعم أو مكتبة', desc:'صمّم مخطط قاعدة بيانات علائقي بسيط، واعرض نقاط نهاية موثقة، وتدرّب على مبادئ SOLID أثناء الكتابة.', stack:'Express / PostgreSQL'},
+      {title:'مشروع جماعي بنظام Git تعاوني', desc:'انضم لفريق من 2-3 زملاء وابنوا مشروعًا واحدًا باستخدام فروع وطلبات دمج حقيقية، لتتعلم العمل الجماعي المنظم.', stack:'Git / GitHub'}
+    ]},
+    { yearId:3, color:'--c-gold', ideas:[
+      {title:'خدمة مصغّرة منشورة على السحابة', desc:'ابنِ واجهة برمجية وانشرها فعليًا مع قاعدة بيانات مُدارة، وأضف خط CI/CD بسيط يشغّل الاختبارات وينشر تلقائيًا عند الدمج.', stack:'AWS / Docker / CI'},
+      {title:'تطبيق موبايل بسيط يستهلك واجهة برمجية', desc:'طبّق تصميم واجهات نظيف ويتواصل مع خادم حقيقي، وتدرّب على إدارة الحالة.', stack:'React Native / Flutter'},
+      {title:'لوحة تحكم وتحليل بيانات', desc:'اجمع بيانات حقيقية واعرضها في لوحة تفاعلية برسوم بيانية، وركّز على أداء الاستعلامات مع بيانات كبيرة نسبيًا.', stack:'React / Chart.js / SQL'}
+    ]},
+    { yearId:4, color:'--c-ember', ideas:[
+      {title:'مشروع تخرّج بمعمارية موزّعة بسيطة', desc:'قسّم النظام إلى خدمتين أو ثلاث تتواصل عبر واجهات برمجية أو طابور رسائل، ووثّق قرارات التصميم كأنك تشرحها في مقابلة تصميم أنظمة.', stack:'Microservices / Docker'},
+      {title:'ميزة تعتمد على تعلّم الآلة داخل منتج قائم', desc:'أضف قدرة ذكاء اصطناعي عملية لأحد مشاريعك السابقة بدل بناء نموذج من الصفر، لتُظهر قدرتك على الدمج لا فقط النظرية.', stack:'Python / API جاهز'},
+      {title:'منتج مصغّر قابل للاستخدام فعليًا', desc:'اختر مشكلة حقيقية بسيطة وابنِ حلًا يستخدمه أشخاص فعليون، حتى لو كان صغيرًا — هذا أقوى دليل عملي في مقابلاتك القادمة.', stack:'Full-stack + نشر فعلي'}
+    ]}
+  ];
+
+  var interviewGroups = [
+    {
+      id:'iv-basics', icon:'i-code', color:'--c-violet', title:'أساسيات البرمجة وهياكل البيانات',
+      items:[
+        {level:'مبتدئ', q:'ما الفرق بين المصفوفة (Array) والقائمة المترابطة (Linked List)؟', a:'المصفوفة تخزن العناصر في ذاكرة متجاورة وتتيح وصولًا فوريًا بالفهرس، لكن إضافة أو حذف عنصر في المنتصف مكلف. القائمة المترابطة تخزن كل عنصر في عقدة منفصلة تشير للتالية، فالإضافة والحذف أسرع لكن الوصول بالفهرس يتطلب المرور عبر العقد.'},
+        {level:'مبتدئ', q:'متى تستخدم Stack ومتى تستخدم Queue؟', a:'Stack يناسب سيناريوهات "آخر داخل، أول خارج" مثل التراجع عن إجراء أو تقييم التعبيرات. Queue يناسب "أول داخل، أول خارج" مثل معالجة الطلبات بالترتيب أو البحث بالعرض في الأشجار والرسوم البيانية.'},
+        {level:'متوسط', q:'اشرح تعقيد الزمن لعملية البحث في شجرة بحث ثنائية متوازنة.', a:'O(log n) في الحالة العامة لأن كل خطوة تستبعد نصف العناصر المتبقية تقريبًا، لكنها تتحول إلى O(n) إذا كانت الشجرة غير متوازنة وأصبحت شبيهة بقائمة مترابطة.'},
+        {level:'متقدم', q:'كيف تصمم خوارزمية لإيجاد أقصر مسار في رسم بياني موزون بدون قيم سالبة؟', a:'خوارزمية Dijkstra باستخدام Priority Queue: تبدأ من العقدة المصدر بمسافة صفر، وتوسّع دائمًا العقدة ذات أقل مسافة مؤكدة، وتحدّث مسافات جيرانها إن وجدت مسارًا أقصر، حتى تُثبَّت كل العقد.'}
+      ]
+    },
+    {
+      id:'iv-webdb', icon:'i-cloud', color:'--c-teal', title:'تطوير الويب وقواعد البيانات',
+      items:[
+        {level:'مبتدئ', q:'ما الفرق بين SQL و NoSQL، ومتى تختار كل منهما؟', a:'SQL يفرض هيكلًا صارمًا للبيانات وعلاقات واضحة ويناسب البيانات المترابطة التي تحتاج اتساقًا قويًا. NoSQL أكثر مرونة في الهيكل ويناسب البيانات الضخمة أو سريعة التغيّر التي لا تحتاج علاقات معقدة.'},
+        {level:'متوسط', q:'ما الفرق بين REST و GraphQL؟', a:'REST يعرّف نقاط نهاية ثابتة لكل مورد وقد يؤدي لجلب بيانات زائدة أو ناقصة. GraphQL يتيح للعميل تحديد الحقول المطلوبة بالضبط عبر استعلام واحد، مما يقلل عدد الطلبات لكنه يزيد تعقيد الخادم.'},
+        {level:'متوسط', q:'كيف تحمي تطبيق ويب من هجمات SQL Injection؟', a:'باستخدام الاستعلامات المُعامَلة أو ORM بدلًا من دمج مدخلات المستخدم مباشرة في نص الاستعلام، إضافة إلى التحقق من صحة المدخلات وتقييد صلاحيات مستخدم قاعدة البيانات.'},
+        {level:'متقدم', q:'كيف تصمم نظام Caching لتقليل الحمل على قاعدة البيانات في تطبيق عالي الزيارات؟', a:'استخدام طبقة تخزين مؤقت في الذاكرة أمام قاعدة البيانات، مع سياسة انتهاء صلاحية مناسبة، وإبطال الكاش عند التحديث، وربما نمط Cache-aside لتقليل تعقيد التزامن.'}
+      ]
+    },
+    {
+      id:'iv-system', icon:'i-network', color:'--c-gold', title:'تصميم الأنظمة',
+      items:[
+        {level:'متوسط', q:'كيف توسّع تطبيق ويب بسيط ليتحمل مليون مستخدم؟', a:'ابدأ بفصل الخادم عن قاعدة البيانات، أضف موازن أحمال وعدة نسخ من الخادم، استخدم كاش لتقليل قراءات قاعدة البيانات، وفكّر لاحقًا في تقسيم قاعدة البيانات عند الحاجة.'},
+        {level:'متقدم', q:'صمّم نظام تقصير روابط على مستوى عالٍ.', a:'تحتاج خدمة توليد معرّف فريد قصير، قاعدة بيانات لتخزين الربط بين المعرّف والرابط الأصلي، طبقة كاش للروابط الأكثر استخدامًا، وموازن أحمال أمام عدة نسخ من الخدمة لضمان التوفر العالي.'},
+        {level:'متقدم', q:'ما الفرق بين Vertical Scaling و Horizontal Scaling، وما مخاطر كل منهما؟', a:'التوسّع الرأسي يعني زيادة موارد خادم واحد وهو بسيط لكن له سقف مادي ونقطة فشل واحدة. التوسّع الأفقي يعني إضافة خوادم متعددة، أكثر مرونة وموثوقية لكنه يضيف تعقيد التزامن وإدارة الحالة المشتركة.'}
+      ]
+    },
+    {
+      id:'iv-behavioral', icon:'i-users', color:'--c-rose', title:'أسئلة سلوكية',
+      items:[
+        {level:'مبتدئ', q:'حدّثني عن مشروع تفخر به.', a:'استخدم أسلوب STAR: صف السياق باختصار، ثم ركّز على قرارك التقني وسبب اختياره، واختم بنتيجة قابلة للقياس إن أمكن.'},
+        {level:'متوسط', q:'اذكر موقفًا اختلفت فيه مع زميل حول قرار تقني، وكيف تعاملت معه.', a:'أظهر أنك تستمع لوجهة النظر الأخرى، وتدعم رأيك بأسباب موضوعية، وأنك تصل لحل مشترك أو تتقبّل قرار الفريق بمهنية حتى لو لم يكن رأيك.'},
+        {level:'متوسط', q:'كيف تتعامل مع مهلة زمنية ضيقة لمشروع لم تكتمل متطلباته بعد؟', a:'وضّح أنك تحدد الأولويات مع الفريق، تتواصل مبكرًا بأي مخاطر على الموعد، وتقترح نطاقًا أصغر بدل تسليم متأخر أو منتج غير مكتمل الجودة.'},
+        {level:'متقدم', q:'حدّثني عن أكبر خطأ تقني ارتكبته، وماذا تعلمت منه.', a:'الصدق مهم هنا أكثر من إخفاء الخطأ — صف الخطأ بوضوح، الأثر الذي سبّبه، الخطوات التي اتخذتها لإصلاحه، والتغيير الذي أجريته لاحقًا في عملك لمنع تكراره.'}
+      ]
+    }
+  ];
+
+  var faqs = [
+    {q:'هل أحتاج شهادة جامعية في علوم الحاسب لأصبح مهندس برمجيات؟', a:'لا بالضرورة، لكنها تسهّل الطريق. الشهادة تمنحك أساسًا منظمًا في هياكل البيانات وأنظمة التشغيل والشبكات، وتفتح لك فرص تدريب أسهل. إن لم تكن لديك شهادة، يمكنك تعويض ذلك بمسار تعلّم ذاتي منضبط ومشاريع قوية ومساهمات مفتوحة المصدر تثبت مهاراتك عمليًا.'},
+    {q:'ما اللغة البرمجية التي يجب أن أتعلمها أولًا؟', a:'Python خيار ممتاز للبداية لبساطة صياغتها وتركيزها على المنطق بدل التفاصيل، لكن الأهم هو فهم المفاهيم — المتغيرات، الحلقات، الدوال، هياكل البيانات — لا اللغة بحد ذاتها، فهذه المفاهيم تنتقل معك لأي لغة أخرى لاحقًا.'},
+    {q:'هل يجب أن أتعلم تطوير الويب قبل هياكل البيانات والخوارزميات، أم العكس؟', a:'ابدأ بأساسيات البرمجة وهياكل البيانات أولًا، فهي الأساس الذي يبني عليه كل شيء آخر. تطوير الويب مهارة تطبيقية ممتازة تبدأ بالتوازي أو بعدها مباشرة، لكن بدون أساس هياكل البيانات ستجد صعوبة لاحقًا في فهم الأداء وتصميم الأنظمة.'},
+    {q:'كم مشروعًا أحتاج في سيرتي الذاتية لأبدو مقنعًا لأصحاب العمل؟', a:'العدد ليس المعيار — 2 إلى 4 مشاريع متقنة وذات عمق تقني حقيقي أقوى بكثير من 15 مشروعًا سطحيًا. اختر مشاريع تُظهر قرارات تصميم واضحة ويمكنك شرحها بعمق في مقابلة.'},
+    {q:'متى يجب أن أبدأ التقديم على وظائف أو تدريب؟', a:'أبكر مما تعتقد. ابدأ بالتقديم على تدريب أو فرص جزئية من السنة الثانية أو الثالثة، حتى لو شعرت أنك "غير جاهز" — الخبرة الحقيقية والمقابلات نفسها جزء أساسي من عملية التعلّم، ولن تشعر بالجاهزية الكاملة أبدًا قبل أن تبدأ فعليًا.'},
+    {q:'هل استخدام أدوات الذكاء الاصطناعي في البرمجة يضعف مهاراتي؟', a:'يضعفها إذا اعتمدت عليها دون فهم، ويقويها إذا استخدمتها لتتعلم أسرع وتراجع أفكارك. اجعل قاعدتك: لا تقبل أي سطر كود من أداة ذكاء اصطناعي دون أن تفهم لماذا يعمل — وإلا فأنت تبني على أساس لا تملكه.'},
+    {q:'أشعر أنني متأخر مقارنة بزملائي، هل هذا طبيعي؟', a:'نعم، طبيعي جدًا وشائع للغاية. رحلة كل شخص مختلفة السرعة والظروف، والمقارنة بلحظة معينة من رحلة شخص آخر مضللة دائمًا. ركّز على تقدمك الأسبوعي الخاص بدل السباق مع الآخرين — الاتساق على المدى الطويل يتفوق دائمًا على السرعة الأولية.'},
+    {q:'هل التخصص المبكر في مجال معين فكرة جيدة؟', a:'ابنِ أساسًا عامًا قويًا أولًا، ثم اسمح لنفسك بالتخصص تدريجيًا في السنة الثالثة أو الرابعة بناءً على ما استمتعت به فعليًا أثناء التجربة، لا بناءً على ما تعتقد أنه "الأكثر طلبًا" فقط.'}
+  ];
+
   var resources = [
     {n:'roadmap.sh', t:'موقع', href:'https://roadmap.sh/'},
     {n:'Clean Code', t:'كتاب', href:'https://www.goodreads.com/book/show/3735293-clean-code'},
@@ -843,7 +977,10 @@
   var waypoints = [
     {id:'sec-rules', label:'القواعد العشر'},
     {id:'sec-years', label:'سنوات الدراسة'},
+    {id:'sec-projects', label:'أفكار مشاريع'},
     {id:'sec-tracks', label:'المسارات الموازية'},
+    {id:'sec-interview', label:'أسئلة المقابلات'},
+    {id:'sec-faq', label:'الأسئلة الشائعة'},
     {id:'sec-today', label:'ابدأ اليوم'}
   ];
 
@@ -913,11 +1050,56 @@
   });
 
   function activateYear(id){
-    document.querySelectorAll('.year-tab').forEach(function(t){
+    yearTabs.querySelectorAll('.year-tab').forEach(function(t){
       t.setAttribute('aria-selected', t.getAttribute('data-y') == id ? 'true' : 'false');
     });
-    document.querySelectorAll('.year-panel').forEach(function(p){
+    yearPanels.querySelectorAll('.year-panel').forEach(function(p){
       p.classList.toggle('active', p.id === 'year-panel-'+id);
+    });
+  }
+
+  /* ---------------- RENDER: PROJECT IDEAS ---------------- */
+  var projTabs = document.getElementById('projTabs');
+  var projPanels = document.getElementById('projPanels');
+  projectIdeas.forEach(function(py, idx){
+    var y = years.filter(function(x){ return x.id === py.yearId; })[0];
+    var tab = document.createElement('button');
+    tab.className = 'year-tab';
+    tab.setAttribute('role','tab');
+    tab.setAttribute('data-y', py.yearId);
+    tab.setAttribute('aria-selected', idx === 0 ? 'true' : 'false');
+    tab.setAttribute('aria-controls', 'proj-panel-'+py.yearId);
+    tab.innerHTML = '<span>'+y.label+'</span><span class="yt-sub">'+y.sub+'</span>';
+    tab.addEventListener('click', function(){ activateProject(py.yearId); });
+    projTabs.appendChild(tab);
+
+    var panel = document.createElement('div');
+    panel.className = 'year-panel' + (idx === 0 ? ' active' : '');
+    panel.id = 'proj-panel-'+py.yearId;
+    panel.setAttribute('role','tabpanel');
+
+    panel.innerHTML =
+      '<div class="year-card" style="--yc:var('+py.color+');--yc-rgb:var('+py.color+'-rgb)">'+
+        '<div class="year-card-head"><h3>'+y.label+' — أفكار مشاريع</h3><span>سنة '+py.yearId+' / 4</span></div>'+
+        '<div class="year-grid">'+
+          py.ideas.map(function(idea){
+            return '<div class="year-block idea-block">'+
+              '<h4><svg><use href="#i-rocket"/></svg> '+idea.title+'</h4>'+
+              '<p class="idea-desc">'+idea.desc+'</p>'+
+              '<div class="tool-pills"><span class="tool-pill ltr">'+idea.stack+'</span></div>'+
+            '</div>';
+          }).join('')+
+        '</div>'+
+      '</div>';
+    projPanels.appendChild(panel);
+  });
+
+  function activateProject(id){
+    projTabs.querySelectorAll('.year-tab').forEach(function(t){
+      t.setAttribute('aria-selected', t.getAttribute('data-y') == id ? 'true' : 'false');
+    });
+    projPanels.querySelectorAll('.year-panel').forEach(function(p){
+      p.classList.toggle('active', p.id === 'proj-panel-'+id);
     });
   }
 
@@ -941,6 +1123,35 @@
   });
   setupAccordion('.track-btn');
 
+  /* ---------------- RENDER: INTERVIEW PREP ---------------- */
+  var ivGroupsEl = document.getElementById('ivGroups');
+  function levelClass(level){
+    if(level === 'مبتدئ') return 'lvl-1';
+    if(level === 'متوسط') return 'lvl-2';
+    return 'lvl-3';
+  }
+  interviewGroups.forEach(function(g, gi){
+    var group = document.createElement('div');
+    group.className = 'iv-group';
+    group.style.setProperty('--gc', 'var('+g.color+')');
+    var itemsHtml = g.items.map(function(item, ii){
+      var panelId = 'iv-panel-'+gi+'-'+ii;
+      return '<div class="rule-card iv-item">'+
+        '<button class="rule-btn iv-btn" aria-expanded="false" aria-controls="'+panelId+'">'+
+          '<span class="iv-level '+levelClass(item.level)+'">'+item.level+'</span>'+
+          '<span class="rule-title">'+item.q+'</span>'+
+          '<svg class="rule-chevron"><use href="#i-chevron"/></svg>'+
+        '</button>'+
+        '<div class="rule-panel" id="'+panelId+'"><div class="rule-panel-in">'+item.a+'</div></div>'+
+      '</div>';
+    }).join('');
+    group.innerHTML =
+      '<h3 class="iv-group-head"><svg><use href="#'+g.icon+'"/></svg> '+g.title+'</h3>'+
+      '<div class="stack-list">'+itemsHtml+'</div>';
+    ivGroupsEl.appendChild(group);
+  });
+  setupAccordion('.iv-btn');
+
   /* ---------------- RENDER: RESOURCES / TIPS ---------------- */
   var resList = document.getElementById('resList');
   resources.forEach(function(r){
@@ -954,6 +1165,22 @@
     li.innerHTML = '<svg><use href="#i-check"/></svg><span>'+t+'</span>';
     tipsList.appendChild(li);
   });
+
+  /* ---------------- RENDER: FAQ ---------------- */
+  var faqList = document.getElementById('faqList');
+  faqs.forEach(function(f, idx){
+    var panelId = 'faq-panel-'+idx;
+    var card = document.createElement('div');
+    card.className = 'rule-card';
+    card.innerHTML =
+      '<button class="rule-btn faq-btn" aria-expanded="false" aria-controls="'+panelId+'">'+
+        '<span class="rule-title">'+f.q+'</span>'+
+        '<svg class="rule-chevron"><use href="#i-chevron"/></svg>'+
+      '</button>'+
+      '<div class="rule-panel" id="'+panelId+'"><div class="rule-panel-in">'+f.a+'</div></div>';
+    faqList.appendChild(card);
+  });
+  setupAccordion('.faq-btn');
 
   /* ---------------- TODAY CHECKLIST ---------------- */
   var todayList = document.getElementById('todayList');
