@@ -137,7 +137,7 @@
     z-index:-1;
   }
   .rail-fill{
-    position:absolute;right:0;bottom:0;width:100%;
+    position:absolute;right:0;top:0;width:100%;
     background:linear-gradient(180deg,var(--c-teal),var(--c-gold));
     border-radius:2px;
     height:0%;
@@ -1491,8 +1491,8 @@
       var pct = Math.round(progress * 100);
 
       railFill.style.height = pct + '%';
-      railMarker.style.top = (100 - pct) + '%';
-      railAltitude.style.top = (100 - pct) + '%';
+      railMarker.style.top = pct + '%';
+      railAltitude.style.top = pct + '%';
       railAltitude.textContent = pct + '%';
       topProgressFill.style.width = pct + '%';
 
