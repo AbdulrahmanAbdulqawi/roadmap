@@ -1053,6 +1053,7 @@
   ];
 
   var resources = [
+    {n:'دليل تسريع المواقع (Build & Tell)', t:'دليل مجاني · 12 حيلة', href:'website-speed-guide.html', rtl:true},
     {n:'roadmap.sh', t:'موقع', href:'https://roadmap.sh/'},
     {n:'Clean Code', t:'كتاب', href:'https://www.goodreads.com/book/show/3735293-clean-code'},
     {n:'LeetCode', t:'منصة', href:'https://leetcode.com/'},
@@ -1357,7 +1358,7 @@
   var resList = document.getElementById('resList');
   resources.forEach(function(r){
     var li = document.createElement('li');
-    li.innerHTML = '<a class="ltr" href="'+r.href+'" target="_blank" rel="noopener"><b>'+r.n+'</b><small>'+r.t+'</small></a>';
+    li.innerHTML = '<a class="'+(r.rtl?'':'ltr')+'" href="'+r.href+'" target="_blank" rel="noopener"><b>'+r.n+'</b><small>'+r.t+'</small></a>';
     resList.appendChild(li);
     indexItem(li, r.n+' '+r.t);
   });

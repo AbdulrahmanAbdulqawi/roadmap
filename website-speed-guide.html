@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="dark light">
+<title>دليل تسريع المواقع | Build &amp; Tell</title>
+<meta name="description" content="12 حيلة وأداة مجانية أستخدمها فعليًا لتسريع المواقع: ضغط الصور، Lazy Loading، CDN، التخزين المؤقت، وأكثر.">
+<link rel="canonical" href="https://roadmap.abdulrahmanabdulqawi.com/website-speed-guide.html">
+<meta property="og:type" content="article">
+<meta property="og:locale" content="ar_AR">
+<meta property="og:title" content="دليل تسريع المواقع | Build &amp; Tell">
+<meta property="og:description" content="12 حيلة وأداة مجانية أستخدمها فعليًا لتسريع المواقع، بلا نظريات زائدة.">
+<meta property="og:url" content="https://roadmap.abdulrahmanabdulqawi.com/website-speed-guide.html">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="دليل تسريع المواقع | Build &amp; Tell">
+<meta name="twitter:description" content="12 حيلة وأداة مجانية أستخدمها فعليًا لتسريع المواقع.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>%E2%9A%A1</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800;900&family=Tajawal:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#080B12;
+    --bg-rgb:8,11,18;
+    --surface:rgba(19,26,44,.55);
+    --surface-2:rgba(25,34,56,.5);
+    --ink:#F3F1E8;
+    --text-hi:#EFF2FA;
+    --text-lo:#8892AC;
+    --line:rgba(180,196,255,.10);
+    --line-strong:rgba(180,196,255,.20);
+    --blur:14px;
+
+    --c-gold:#EAB308;      --c-gold-rgb:234,179,8;
+    --c-violet:#A78BFA;    --c-violet-rgb:167,139,250;
+    --c-teal:#22D3EE;      --c-teal-rgb:34,211,238;
+    --c-ember:#FF8A3D;     --c-ember-rgb:255,138,61;
+
+    --tex-blob-1:rgba(234,179,8,.10);
+    --tex-blob-2:rgba(34,211,238,.10);
+    --tex-dot:rgba(200,215,255,.08);
+
+    --f-display:'Cairo',system-ui,sans-serif;
+    --f-body:'Tajawal',system-ui,sans-serif;
+    --f-mono:'IBM Plex Mono',monospace;
+
+    --radius:14px;
+    --radius-sm:10px;
+    --shadow:0 20px 50px -20px rgba(0,0,0,.8);
+  }
+  :root[data-theme="light"]{
+    --bg:#F1F3F9;
+    --bg-rgb:241,243,249;
+    --surface:rgba(255,255,255,.66);
+    --surface-2:rgba(255,255,255,.48);
+    --text-hi:#101728;
+    --text-lo:#5B6478;
+    --line:rgba(16,23,40,.09);
+    --line-strong:rgba(16,23,40,.16);
+
+    --c-gold:#A16207;      --c-gold-rgb:161,98,7;
+    --c-violet:#7C3AED;    --c-violet-rgb:124,58,237;
+    --c-teal:#0E7490;      --c-teal-rgb:14,116,144;
+    --c-ember:#C2410C;     --c-ember-rgb:194,65,12;
+
+    --tex-blob-1:rgba(161,98,7,.06);
+    --tex-blob-2:rgba(14,116,144,.07);
+    --tex-dot:rgba(16,23,40,.05);
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-padding-top:24px;}
+  body{
+    margin:0;
+    background-color:var(--bg);
+    background-image:
+      radial-gradient(1100px 650px at 100% -10%, var(--tex-blob-1), transparent 60%),
+      radial-gradient(900px 650px at 0% 10%, var(--tex-blob-2), transparent 55%),
+      radial-gradient(circle, var(--tex-dot) 1px, transparent 1.6px);
+    background-size:auto, auto, 24px 24px;
+    background-repeat:no-repeat, no-repeat, repeat;
+    background-attachment:fixed, fixed, fixed;
+    color:var(--text-hi);
+    font-family:var(--f-body);
+    line-height:1.75;
+    -webkit-font-smoothing:antialiased;
+  }
+  h1,h2,h3{font-family:var(--f-display);margin:0;color:var(--text-hi);}
+  p{margin:0;}
+  .ltr{direction:ltr;unicode-bidi:isolate;font-family:var(--f-mono);font-size:.92em;letter-spacing:.02em;}
+  a{color:inherit;}
+  button{font-family:inherit;}
+  ::selection{background:var(--c-gold);color:var(--bg);}
+  :focus-visible{outline:2px solid var(--c-gold);outline-offset:3px;border-radius:4px;box-shadow:0 0 16px rgba(var(--c-gold-rgb),.5);}
+
+  .wrap{max-width:820px;margin:0 auto;padding:0 24px;}
+
+  .top-progress{position:fixed;top:0;right:0;left:0;height:2px;z-index:60;background:rgba(255,255,255,.06);}
+  .top-progress span{display:block;height:100%;width:0%;background:linear-gradient(90deg,var(--c-teal),var(--c-gold));box-shadow:0 0 10px rgba(var(--c-gold-rgb),.6);transition:width .08s linear;}
+
+  .topbar{
+    position:sticky;top:0;z-index:50;display:flex;align-items:center;justify-content:space-between;
+    padding:14px 24px;background:rgba(var(--bg-rgb),.72);backdrop-filter:blur(var(--blur));-webkit-backdrop-filter:blur(var(--blur));
+    border-bottom:1px solid var(--line);
+  }
+  .back-link{
+    display:inline-flex;align-items:center;gap:8px;color:var(--text-lo);text-decoration:none;
+    font-family:var(--f-mono);font-size:.8rem;transition:color .2s;
+  }
+  .back-link:hover{color:var(--c-gold);}
+  .theme-toggle{
+    width:38px;height:38px;display:flex;align-items:center;justify-content:center;
+    background:var(--surface-2);border:1px solid var(--line);border-radius:9px;
+    color:var(--c-gold);cursor:pointer;transition:box-shadow .25s,border-color .25s;
+  }
+  .theme-toggle svg{width:16px;height:16px;}
+  .theme-toggle .tt-moon{display:none;}
+  :root[data-theme="light"] .theme-toggle .tt-sun{display:none;}
+  :root[data-theme="light"] .theme-toggle .tt-moon{display:block;}
+  .theme-toggle:hover{box-shadow:0 0 16px -4px rgba(var(--c-gold-rgb),.5);border-color:rgba(var(--c-gold-rgb),.4);}
+
+  .content-hero{padding:44px 0 8px;}
+  .eyebrow{
+    display:inline-flex;align-items:center;gap:8px;
+    font-family:var(--f-mono);font-size:.74rem;letter-spacing:.06em;
+    color:var(--c-gold);background:rgba(var(--c-gold-rgb),.12);
+    border:1px solid rgba(var(--c-gold-rgb),.35);
+    padding:5px 14px;border-radius:999px;margin-bottom:18px;
+    box-shadow:0 0 18px -6px rgba(var(--c-gold-rgb),.5);
+  }
+  .content-hero h1{font-size:clamp(1.7rem,3.6vw,2.5rem);font-weight:900;line-height:1.35;}
+  .content-hero h1 .accent{color:var(--c-gold);text-shadow:0 0 28px rgba(var(--c-gold-rgb),.5);}
+  .content-hero p.sub{margin:16px 0 0;color:var(--text-lo);font-size:1rem;max-width:640px;}
+  .badges{margin-top:22px;display:flex;flex-wrap:wrap;gap:10px;}
+  .badge{
+    display:flex;align-items:center;gap:7px;background:var(--surface);border:1px solid var(--line);
+    backdrop-filter:blur(var(--blur));padding:8px 13px;border-radius:999px;font-size:.8rem;color:var(--text-hi);
+  }
+  .badge svg{width:14px;height:14px;color:var(--c-gold);flex-shrink:0;}
+
+  .section{padding:44px 0;border-top:1px solid var(--line);}
+  .section:first-of-type{border-top:0;}
+
+  .tips-grid{display:flex;flex-direction:column;gap:12px;}
+  .tip-card{
+    background:var(--surface);border:1px solid var(--line);
+    backdrop-filter:blur(var(--blur));-webkit-backdrop-filter:blur(var(--blur));
+    border-radius:var(--radius);overflow:hidden;
+    transition:border-color .25s,box-shadow .25s;
+  }
+  .tip-card:hover{border-color:rgba(var(--c-gold-rgb),.4);box-shadow:0 0 24px -8px rgba(var(--c-gold-rgb),.4);}
+  .tip-btn{width:100%;text-align:right;background:none;border:0;cursor:pointer;color:inherit;padding:16px;display:flex;align-items:center;gap:12px;}
+  .tip-num{
+    font-family:var(--f-mono);font-weight:600;font-size:.76rem;color:var(--bg);
+    background:linear-gradient(135deg,var(--c-gold),var(--c-violet));
+    width:32px;height:32px;border-radius:8px;flex-shrink:0;display:flex;align-items:center;justify-content:center;
+    box-shadow:0 0 14px -4px rgba(var(--c-gold-rgb),.6);
+  }
+  .tip-icon{
+    width:36px;height:36px;border-radius:8px;flex-shrink:0;display:flex;align-items:center;justify-content:center;
+    background:var(--surface-2);color:var(--c-gold);box-shadow:inset 0 0 0 1px rgba(var(--c-gold-rgb),.3);
+  }
+  .tip-icon svg{width:18px;height:18px;}
+  .tip-title{flex:1;font-weight:700;font-size:.94rem;}
+  .tip-chevron{width:15px;height:15px;color:var(--text-lo);transition:transform .25s;flex-shrink:0;}
+  .tip-btn[aria-expanded="true"] .tip-chevron{transform:rotate(180deg);}
+  .tip-panel{max-height:0;overflow:hidden;transition:max-height .3s ease;}
+  .tip-panel-in{padding:0 16px 20px 16px;color:var(--text-lo);font-size:.9rem;}
+  .tip-panel-in p{margin-bottom:12px;}
+  .tool-pills{display:flex;flex-wrap:wrap;gap:7px;margin-top:4px;}
+  .tool-pill{
+    font-family:var(--f-mono);font-size:.76rem;color:var(--text-hi);background:var(--surface-2);
+    border:1px solid rgba(var(--c-gold-rgb),.25);letter-spacing:.02em;padding:5px 11px;border-radius:7px;
+  }
+
+  .cta{
+    position:relative;overflow:hidden;background:linear-gradient(180deg,var(--surface),var(--bg));
+    border:1px solid var(--line);backdrop-filter:blur(var(--blur));-webkit-backdrop-filter:blur(var(--blur));
+    border-radius:var(--radius);padding:44px 32px;text-align:center;
+  }
+  .cta::before{
+    content:'';position:absolute;inset:auto 0 0 0;height:60%;
+    background:
+      linear-gradient(135deg, transparent 48%, rgba(var(--c-violet-rgb),.18) 49%, rgba(var(--c-violet-rgb),.18) 50%, transparent 51%),
+      linear-gradient(45deg, transparent 60%, rgba(var(--c-gold-rgb),.16) 61%, rgba(var(--c-gold-rgb),.16) 62%, transparent 63%);
+    opacity:.7;pointer-events:none;
+  }
+  .cta p{position:relative;font-size:1rem;line-height:1.8;max-width:600px;margin:0 auto;}
+  .cta p + p{margin-top:14px;}
+  .cta .hl{color:var(--c-gold);font-weight:700;}
+
+  footer{text-align:center;padding:40px 20px 56px;color:var(--text-lo);font-size:.84rem;}
+  footer .tagline{font-family:var(--f-mono);color:var(--c-gold);letter-spacing:.03em;margin-bottom:10px;font-size:.88rem;}
+  footer .foot-desc{max-width:460px;margin:0 auto;}
+  footer .foot-divider{width:52px;height:1px;background:var(--line-strong);margin:20px auto;}
+  footer .site-link{
+    display:inline-flex;align-items:center;gap:8px;color:var(--c-gold);text-decoration:none;
+    font-family:var(--f-mono);font-size:.88rem;letter-spacing:.02em;border-bottom:1px solid rgba(var(--c-gold-rgb),.35);
+    padding-bottom:2px;
+  }
+  footer .site-link:hover{border-color:var(--c-gold);opacity:.85;}
+  footer .foot-links{display:flex;flex-wrap:wrap;gap:16px;justify-content:center;align-items:center;}
+
+  @media (prefers-reduced-motion: reduce){
+    *{animation-duration:.001ms !important;animation-iteration-count:1 !important;transition-duration:.001ms !important;}
+  }
+</style>
+</head>
+<body>
+
+<svg style="display:none" aria-hidden="true">
+  <symbol id="i-cloud" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 18a4 4 0 0 1-.5-7.97A5 5 0 0 1 16 8.5 3.5 3.5 0 0 1 16.5 18H7z"/><path d="M12 12v6M9.5 15.5 12 13l2.5 2.5"/></symbol>
+  <symbol id="i-refresh" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12a8 8 0 0 1 14-5.3L21 9"/><path d="M21 4v5h-5"/><path d="M20 12a8 8 0 0 1-14 5.3L3 15"/><path d="M3 20v-5h5"/></symbol>
+  <symbol id="i-code" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 7l-5 5 5 5M15 7l5 5-5 5"/></symbol>
+  <symbol id="i-chart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 20V10M11 20V4M18 20v-7"/><path d="M2 20h20"/></symbol>
+  <symbol id="i-network" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="6" cy="6" r="2"/><circle cx="18" cy="6" r="2"/><circle cx="12" cy="18" r="2"/><path d="M7.5 7l3.5 9M16.5 7L13 16M8 6h8"/></symbol>
+  <symbol id="i-doc" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="5" y="3" width="14" height="18" rx="1.5"/><path d="M8 8h8M8 12h8M8 16h5"/></symbol>
+  <symbol id="i-target" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r=".8" fill="currentColor"/></symbol>
+  <symbol id="i-book" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5c2-1 5-1 8 0v14c-3-1-6-1-8 0V5z"/><path d="M20 5c-2-1-5-1-8 0v14c3-1 6-1 8 0V5z"/></symbol>
+  <symbol id="i-spark" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l1.6 5.4L19 9l-5.4 1.6L12 16l-1.6-5.4L5 9l5.4-1.6L12 2z"/><path d="M19 15l.7 2.3L22 18l-2.3.7L19 21l-.7-2.3L16 18l2.3-.7L19 15z"/></symbol>
+  <symbol id="i-rocket" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2c3 1 5 4 5 8 0 3-1 5-2 6l-1 3-2-2-2 2-1-3c-1-1-2-3-2-6 0-4 2-7 5-8z"/><circle cx="12" cy="9" r="1.6"/><path d="M9 16l-3 3M15 16l3 3"/></symbol>
+  <symbol id="i-flag" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3v18M6 4h10l-2 4 2 4H6"/></symbol>
+  <symbol id="i-mountain" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 20l6-11 4 6 3-5 5 10H3z"/><circle cx="17" cy="6" r="1.6"/></symbol>
+  <symbol id="i-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></symbol>
+  <symbol id="i-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2.5M12 19.5V22M4.2 4.2l1.8 1.8M18 18l1.8 1.8M2 12h2.5M19.5 12H22M4.2 19.8 6 18M18 6l1.8-1.8"/></symbol>
+  <symbol id="i-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8.5 8.5 0 1 1 9.5 4a7 7 0 0 0 10.5 10.5z"/></symbol>
+  <symbol id="i-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 12H5M11 6l-6 6 6 6"/></symbol>
+</svg>
+
+<div class="top-progress" id="topProgress"><span id="topProgressFill"></span></div>
+
+<div class="topbar">
+  <a class="back-link" href="index.html"><svg width="14" height="14"><use href="#i-arrow"/></svg> العودة إلى خارطة الطريق</a>
+  <button class="theme-toggle" id="themeToggle" aria-label="تبديل الوضع الداكن/الفاتح" aria-pressed="false">
+    <svg class="tt-sun"><use href="#i-sun"/></svg>
+    <svg class="tt-moon"><use href="#i-moon"/></svg>
+  </button>
+</div>
+
+<main class="wrap">
+  <div class="content-hero">
+    <span class="eyebrow"><svg width="14" height="14"><use href="#i-spark"/></svg> Build &amp; Tell · دليل مجاني</span>
+    <h1>دليل تسريع المواقع <br> <span class="accent">12 حيلة وأداة</span> أستخدمها فعليًا</h1>
+    <p class="sub">وعدتك في الفيديو بالقائمة الكاملة، وها هي. هذه ليست نظرية، بل الحيل والأدوات التي أستخدمها فعليًا في مشاريعي لتسريع المواقع، وكلها مجانية أو تملك خطة مجانية سخية. لا تحتاج لتطبيقها كلها دفعة واحدة: ابدأ بضغط الصور وLazy Loading كما في الفيديو، ثم انتقل للباقي تدريجيًا حسب مشروعك.</p>
+    <div class="badges">
+      <div class="badge"><svg><use href="#i-target"/></svg> 12 حيلة عملية</div>
+      <div class="badge"><svg><use href="#i-spark"/></svg> أدوات مجانية بالكامل</div>
+    </div>
+  </div>
+
+  <section class="section">
+    <div class="tips-grid" id="tipsGrid"></div>
+  </section>
+
+  <section class="section">
+    <div class="cta">
+      <p>هذه هي القائمة كاملة يا صديقي. لست بحاجة لتطبيقها كلها اليوم؛ <span class="hl">اختر نقطتين وابدأ</span>، وراقب الفرق بنفسك عبر أدوات القياس المذكورة أعلاه.</p>
+      <p>وإن جرّبت واحدة منها، أخبرني في التعليقات كيف كانت النتيجة.</p>
+    </div>
+  </section>
+</main>
+
+<footer>
+  <div class="tagline">Build &amp; Tell <span class="ltr">—</span> ابنِ ثم احكِ</div>
+  <p class="foot-desc">دليل تكميلي مرتبط بخارطة طريق مهندس البرمجيات 2026.</p>
+  <div class="foot-divider"></div>
+  <div class="foot-links">
+    <a class="site-link" href="index.html"><svg width="14" height="14"><use href="#i-arrow"/></svg> خارطة الطريق الرئيسية</a>
+    <a class="site-link" href="https://abdulrahmanabdulqawi.com" target="_blank" rel="noopener noreferrer"><span class="ltr">abdulrahmanabdulqawi.com</span></a>
+  </div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+  var reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if(!reduceMotion){ document.documentElement.style.scrollBehavior = 'smooth'; }
+
+  /* ---------------- THEME (shared key with main roadmap page) ---------------- */
+  var THEME_KEY = 'swe-roadmap-2026-theme';
+  var themeToggle = document.getElementById('themeToggle');
+  function applyTheme(t){
+    document.documentElement.setAttribute('data-theme', t);
+    themeToggle.setAttribute('aria-pressed', String(t === 'light'));
+  }
+  var savedTheme = null;
+  try{ savedTheme = localStorage.getItem(THEME_KEY); }catch(e){}
+  applyTheme(savedTheme || 'dark');
+  themeToggle.addEventListener('click', function(){
+    var next = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+    applyTheme(next);
+    try{ localStorage.setItem(THEME_KEY, next); }catch(e){}
+  });
+
+  /* ---------------- DATA ---------------- */
+  var tips = [
+    {n:'01', icon:'i-cloud', title:'ضغط الصور وتحويلها إلى WebP / AVIF',
+      desc:'الصور غير المضغوطة هي السبب الأول لبطء أغلب المواقع. أي صورة أعلى من 1 ميجابايت تستحق إعادة نظر. التحويل إلى WebP يقلل الحجم بشكل كبير دون فرق ملحوظ في الجودة، خاصة للصور الاعتيادية وصور الخلفيات.',
+      tools:['Squoosh (squoosh.app)','TinyPNG (tinypng.com)','ShortPixel']},
+    {n:'02', icon:'i-refresh', title:'تفعيل Lazy Loading',
+      desc:'من أكثر الأخطاء انتشارًا أن يحمّل الموقع كل الصور والفيديوهات فور فتح الصفحة، حتى تلك التي لن يراها الزائر إلا بعد التمرير لأسفل بكثير. مع Lazy Loading يُحمَّل المحتوى فقط عند الحاجة إليه فعليًا.',
+      tools:['loading="lazy"','Intersection Observer API','lozad.js']},
+    {n:'03', icon:'i-code', title:'تصغير ملفات CSS / JavaScript',
+      desc:'الملفات كما يكتبها المطوّر تحتوي مسافات وتعليقات وأسماء متغيرات طويلة لا يحتاجها المتصفح. التصغير يزيل كل هذا الحشو الزائد قبل الإرسال للزائر.',
+      tools:['Terser','cssnano','Vite (production build)']},
+    {n:'04', icon:'i-chart', title:'تفعيل ضغط الخادم (Gzip أو Brotli)',
+      desc:'ضغط يحدث على مستوى الخادم قبل إرسال الملفات للمتصفح، ويقلل حجمها أحيانًا بأكثر من 70% دون أي تغيير في الكود نفسه.',
+      tools:['Cloudflare (تلقائي)','إعداد Nginx / Apache']},
+    {n:'05', icon:'i-network', title:'استخدام شبكة توصيل محتوى (CDN)',
+      desc:'الـ CDN ينسخ ملفات موقعك على خوادم منتشرة حول العالم، فيصل المحتوى للزائر من أقرب نقطة له جغرافيًا بدلاً من خادم واحد بعيد.',
+      tools:['Cloudflare','jsDelivr']},
+    {n:'06', icon:'i-doc', title:'التخزين المؤقت في المتصفح (Browser Caching)',
+      desc:'بإعداد صحيح، يخزّن متصفح الزائر الملفات التي لا تتغيّر كثيرًا (كالخطوط والأيقونات) محليًا، فلا يعيد تحميلها في كل زيارة جديدة.',
+      tools:['ترويسة Cache-Control','Netlify / Vercel / Cloudflare Pages']},
+    {n:'07', icon:'i-target', title:'تقليل عدد طلبات HTTP',
+      desc:'كل ملف منفصل (صورة، خط، سكربت) يعني طلبًا إضافيًا للخادم. دمج الملفات المتشابهة وتقليل عدد الخطوط والأيقونات المستخدمة يقلل هذا العدد بشكل مباشر.',
+      tools:['تبويب Network في Chrome DevTools']},
+    {n:'08', icon:'i-book', title:'تحميل الخطوط بذكاء (Font Optimization)',
+      desc:'الخطوط، خصوصًا العربية منها، قد تكون ثقيلة إن حُمّلت بكل أوزانها وكل الأحرف التي لا تُستخدم. تحديد الأحرف المطلوبة فقط (Subsetting) يقلل الحجم كثيرًا.',
+      tools:['font-display: swap','Google Fonts (Subset مخصص)','Fontsource']},
+    {n:'09', icon:'i-spark', title:'إزالة الأكواد غير المستخدمة (Unused CSS/JS)',
+      desc:'أغلب المشاريع تحمل مكتبات CSS وJavaScript كاملة بينما تُستخدم منها نسبة بسيطة فقط. إزالة الباقي يخفف الملف النهائي بشكل ملحوظ.',
+      tools:['تبويب Coverage في Chrome DevTools','PurgeCSS']},
+    {n:'10', icon:'i-rocket', title:'تأجيل تحميل السكربتات غير الضرورية (defer / async)',
+      desc:'ليست كل السكربتات تحتاج التحميل فورًا قبل عرض الصفحة. تأجيل ما لا يؤثر في المحتوى الأول (كأدوات التحليل والإحصائيات) يسرّع ما يراه الزائر أولاً.',
+      tools:['<span class="ltr">defer</span>','<span class="ltr">async</span>']},
+    {n:'11', icon:'i-flag', title:'اختيار استضافة سريعة (Fast Hosting)',
+      desc:'مهما حسّنت الكود، استضافة بطيئة أو خادم بعيد جغرافيًا عن جمهورك سيبقى عنق الزجاجة. للمواقع الأمامية خصوصًا، المنصات الحديثة توفر أداء ممتاز مجانًا.',
+      tools:['Vercel','Netlify','Cloudflare Pages']},
+    {n:'12', icon:'i-mountain', title:'قياس الأداء بانتظام (Performance Monitoring)',
+      desc:'لا يمكنك تحسين ما لا تقيسه. القياس الدوري يكشف لك بالضبط أين تذهب الثواني الضائعة، بدل التخمين.',
+      tools:['PageSpeed Insights','GTmetrix','WebPageTest','Lighthouse (Chrome DevTools)']}
+  ];
+
+  var tipsGrid = document.getElementById('tipsGrid');
+  function pills(arr){ return arr.map(function(x){return '<span class="tool-pill ltr">'+x+'</span>';}).join(''); }
+  tips.forEach(function(t, idx){
+    var card = document.createElement('div');
+    card.className = 'tip-card';
+    card.innerHTML =
+      '<button class="tip-btn" aria-expanded="false" aria-controls="tip-panel-'+idx+'">'+
+        '<span class="tip-num">'+t.n+'</span>'+
+        '<span class="tip-icon"><svg width="18" height="18"><use href="#'+t.icon+'"/></svg></span>'+
+        '<span class="tip-title">'+t.title+'</span>'+
+        '<svg class="tip-chevron"><use href="#i-chevron"/></svg>'+
+      '</button>'+
+      '<div class="tip-panel" id="tip-panel-'+idx+'"><div class="tip-panel-in">'+
+        '<p>'+t.desc+'</p>'+
+        '<div class="tool-pills">'+pills(t.tools)+'</div>'+
+      '</div></div>';
+    tipsGrid.appendChild(card);
+  });
+
+  document.querySelectorAll('.tip-btn').forEach(function(btn){
+    btn.addEventListener('click', function(){
+      var expanded = btn.getAttribute('aria-expanded') === 'true';
+      var panel = document.getElementById(btn.getAttribute('aria-controls'));
+      btn.setAttribute('aria-expanded', String(!expanded));
+      panel.style.maxHeight = expanded ? null : (panel.scrollHeight + 'px');
+    });
+  });
+
+  /* ---------------- SCROLL PROGRESS ---------------- */
+  var topProgressFill = document.getElementById('topProgressFill');
+  var ticking = false;
+  function onScroll(){
+    if(ticking) return;
+    ticking = true;
+    requestAnimationFrame(function(){
+      var scrollTop = window.scrollY || document.documentElement.scrollTop;
+      var max = document.documentElement.scrollHeight - window.innerHeight;
+      var pct = max > 0 ? Math.round(Math.min(1, Math.max(0, scrollTop / max)) * 100) : 0;
+      topProgressFill.style.width = pct + '%';
+      ticking = false;
+    });
+  }
+  window.addEventListener('scroll', onScroll, {passive:true});
+  window.addEventListener('resize', onScroll);
+  onScroll();
+})();
+</script>
+</body>
+</html>
