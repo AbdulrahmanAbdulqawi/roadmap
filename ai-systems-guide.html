@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="color-scheme" content="dark light">
+<meta name="color-scheme" content="light dark">
 <title>عشرة أنظمة ذكاء اصطناعي تبنيها في عطلة أسبوع | Build &amp; Tell</title>
 <meta name="description" content="عشرة أنظمة ذكاء اصطناعي عملية بلا سطر كود واحد: موجز الصباح، فرز البريد، التحضير للاجتماعات، مجلس القرار، العقل الثاني، وأكثر — بخطواتها ونصوصها الجاهزة للنسخ.">
 <link rel="canonical" href="https://roadmap.abdulrahmanabdulqawi.com/ai-systems-guide.html">
@@ -21,43 +21,16 @@
 <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@600;700;800;900&family=Tajawal:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   :root{
-    --bg:#080B12;
-    --bg-rgb:8,11,18;
-    --surface:rgba(19,26,44,.55);
-    --surface-2:rgba(25,34,56,.5);
-    --ink:#F3F1E8;
-    --text-hi:#EFF2FA;
-    --text-lo:#8892AC;
-    --line:rgba(180,196,255,.10);
-    --line-strong:rgba(180,196,255,.20);
-    --blur:14px;
-
-    --c-gold:#EAB308;      --c-gold-rgb:234,179,8;
-    --c-violet:#A78BFA;    --c-violet-rgb:167,139,250;
-    --c-teal:#22D3EE;      --c-teal-rgb:34,211,238;
-    --c-ember:#FF8A3D;     --c-ember-rgb:255,138,61;
-
-    --tex-blob-1:rgba(234,179,8,.10);
-    --tex-blob-2:rgba(34,211,238,.10);
-    --tex-dot:rgba(200,215,255,.08);
-
-    --f-display:'Cairo',system-ui,sans-serif;
-    --f-body:'Tajawal',system-ui,sans-serif;
-    --f-mono:'IBM Plex Mono',monospace;
-
-    --radius:14px;
-    --radius-sm:10px;
-    --shadow:0 20px 50px -20px rgba(0,0,0,.8);
-  }
-  :root[data-theme="light"]{
     --bg:#F1F3F9;
     --bg-rgb:241,243,249;
     --surface:rgba(255,255,255,.66);
     --surface-2:rgba(255,255,255,.48);
+    --ink:#F3F1E8;
     --text-hi:#101728;
     --text-lo:#5B6478;
     --line:rgba(16,23,40,.09);
     --line-strong:rgba(16,23,40,.16);
+    --blur:14px;
 
     --c-gold:#A16207;      --c-gold-rgb:161,98,7;
     --c-violet:#7C3AED;    --c-violet-rgb:124,58,237;
@@ -67,6 +40,33 @@
     --tex-blob-1:rgba(161,98,7,.06);
     --tex-blob-2:rgba(14,116,144,.07);
     --tex-dot:rgba(16,23,40,.05);
+
+    --f-display:'Cairo',system-ui,sans-serif;
+    --f-body:'Tajawal',system-ui,sans-serif;
+    --f-mono:'IBM Plex Mono',monospace;
+
+    --radius:14px;
+    --radius-sm:10px;
+    --shadow:0 20px 50px -20px rgba(0,0,0,.8);
+  }
+  :root[data-theme="dark"]{
+    --bg:#080B12;
+    --bg-rgb:8,11,18;
+    --surface:rgba(19,26,44,.55);
+    --surface-2:rgba(25,34,56,.5);
+    --text-hi:#EFF2FA;
+    --text-lo:#8892AC;
+    --line:rgba(180,196,255,.10);
+    --line-strong:rgba(180,196,255,.20);
+
+    --c-gold:#EAB308;      --c-gold-rgb:234,179,8;
+    --c-violet:#A78BFA;    --c-violet-rgb:167,139,250;
+    --c-teal:#22D3EE;      --c-teal-rgb:34,211,238;
+    --c-ember:#FF8A3D;     --c-ember-rgb:255,138,61;
+
+    --tex-blob-1:rgba(234,179,8,.10);
+    --tex-blob-2:rgba(34,211,238,.10);
+    --tex-dot:rgba(200,215,255,.08);
   }
 
   *{box-sizing:border-box;}
@@ -115,9 +115,9 @@
     color:var(--c-gold);cursor:pointer;transition:box-shadow .25s,border-color .25s;
   }
   .theme-toggle svg{width:16px;height:16px;}
-  .theme-toggle .tt-moon{display:none;}
-  :root[data-theme="light"] .theme-toggle .tt-sun{display:none;}
-  :root[data-theme="light"] .theme-toggle .tt-moon{display:block;}
+  .theme-toggle .tt-sun{display:none;}
+  :root[data-theme="dark"] .theme-toggle .tt-sun{display:block;}
+  :root[data-theme="dark"] .theme-toggle .tt-moon{display:none;}
   .theme-toggle:hover{box-shadow:0 0 16px -4px rgba(var(--c-gold-rgb),.5);border-color:rgba(var(--c-gold-rgb),.4);}
 
   .content-hero{padding:44px 0 8px;}
@@ -373,7 +373,7 @@
 
 <div class="topbar">
   <a class="back-link" href="index.html"><svg width="14" height="14"><use href="#i-arrow"/></svg> العودة إلى خارطة الطريق</a>
-  <button class="theme-toggle" id="themeToggle" aria-label="تبديل الوضع الداكن/الفاتح" aria-pressed="false">
+  <button class="theme-toggle" id="themeToggle" aria-label="تبديل الوضع الداكن/الفاتح" aria-pressed="true">
     <svg class="tt-sun"><use href="#i-sun"/></svg>
     <svg class="tt-moon"><use href="#i-moon"/></svg>
   </button>
@@ -458,7 +458,7 @@
   }
   var savedTheme = null;
   try{ savedTheme = localStorage.getItem(THEME_KEY); }catch(e){}
-  applyTheme(savedTheme || 'dark');
+  applyTheme(savedTheme || 'light');
   themeToggle.addEventListener('click', function(){
     var next = document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
     applyTheme(next);
